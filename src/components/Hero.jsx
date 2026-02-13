@@ -1,0 +1,73 @@
+import { motion } from "framer-motion";
+import profileImage from "../assets/profile.png";
+
+export default function Hero() {
+  return (
+    <section id="home" className="relative overflow-hidden bg-white">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+          {/* Left: Content */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="order-2 lg:order-1"
+          >
+            <h1 className="font-heading text-4xl font-bold tracking-tight text-navy-950 sm:text-5xl lg:text-6xl">
+              Hello, I Am <br></br>
+              <span className="text-navy-600">Dimetri Lee</span>.
+            </h1>
+            <p className="font-heading mt-2 text-xl font-semibold text-navy-950 sm:text-2xl">
+              Software Engineer
+            </p>
+            <p className="mt-6 text-lg leading-relaxed text-navy-700 max-w-xl">
+              I build full-stack applications, RESTful APIs, and cross-platform
+              mobile apps. Currently interning at Intellibus and Sagicor
+              Innovation Lab, where I work on scalable backend systems and
+              user-friendly frontends.
+            </p>
+            <div className="mt-10 flex flex-wrap gap-4">
+              <a
+                href="#projects"
+                className="inline-flex items-center rounded-lg bg-navy-950 px-6 py-3 text-base font-semibold text-white shadow-lg hover:bg-navy-900 transition-colors"
+              >
+                View Projects
+              </a>
+              <a
+                href="/resume.pdf"
+                download="Dimetri Lee Resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center rounded-lg border-2 border-navy-950 px-6 py-3 text-base font-semibold text-navy-950 hover:bg-navy-950 hover:text-white transition-colors"
+              >
+                Download CV
+              </a>
+            </div>
+          </motion.div>
+
+          {/* Right: Photo with decorative elements */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="relative order-1 lg:order-2 flex justify-center lg:justify-end"
+          >
+            {/* Decorative circles */}
+            <div className="absolute -right-4 -top-4 h-72 w-72 rounded-full border-2 border-navy-200/60" />
+            <div className="absolute -bottom-2 -right-8 h-48 w-48 rounded-full bg-navy-100/40" />
+            <div className="absolute right-1/4 top-1/4 h-24 w-24 rounded-full bg-navy-200/30" />
+
+            {/* Image container - crops and frames the photo */}
+            <div className="relative z-10 w-72 h-72 sm:w-80 sm:h-80 lg:w-96 lg:h-96 overflow-hidden rounded-full border-4 border-white shadow-2xl ring-2 ring-navy-200/50">
+              <img
+                src={profileImage}
+                alt="Dimetri Lee"
+                className="h-full w-full object-cover object-[center_15%]"
+              />
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
