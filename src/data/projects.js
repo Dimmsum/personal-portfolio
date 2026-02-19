@@ -10,8 +10,8 @@ export const projects = [
     summary:
       "A web application where you can upload multiple files of different types (PDF, images, docs). Files are compiled into a single, editable workspace powered by AI so you can work with all your content in one place and use AI to edit and extend it.",
     techStack: ["Vite", "Supabase", "Gemini AI"],
-    liveUrl: "#",
-    githubUrl: "#",
+    liveUrl: "https://notesreadily.vercel.app",
+    githubUrl: "https://github.com/Dimmsum/readily-web",
     screenshots: [
       "https://placehold.co/800x450/1e3a5f/ffffff?text=Readily+1",
       "https://placehold.co/800x450/243b53/ffffff?text=Readily+2",
