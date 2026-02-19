@@ -182,7 +182,7 @@ export default function Projects() {
                     {activeProject.title}
                   </h3>
                   {activeProject.techStack?.length > 0 && (
-                    <div className="mt-3 flex flex-wrap gap-2">
+                    <div className="mt-5 mb-5 flex flex-wrap gap-2" aria-label="Technologies used">
                       {activeProject.techStack.map((tech, i) => (
                         <span
                           key={i}
@@ -197,7 +197,7 @@ export default function Projects() {
                     images={activeProject.screenshots || []}
                     title={activeProject.title}
                   />
-                  <p className="text-navy-600 leading-relaxed">
+                  <p className="mt-5 text-navy-600 leading-relaxed">
                     {activeProject.summary}
                   </p>
                   <div className="mt-6 flex flex-wrap gap-3">
