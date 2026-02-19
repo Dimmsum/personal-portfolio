@@ -78,7 +78,7 @@ const links = [
 
 export default function Contact() {
   return (
-    <section id="contact" className="bg-white py-20">
+    <section id="contact" className="relative py-24 bg-gradient-to-b from-navy-50/30 via-white to-navy-100/40">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -86,7 +86,7 @@ export default function Contact() {
           viewport={{ once: true }}
           className="text-center"
         >
-          <h2 className="font-heading text-3xl font-bold text-navy-950 sm:text-4xl">
+          <h2 className="font-heading text-3xl font-bold text-navy-950 sm:text-4xl tracking-tight">
             Get in Touch
           </h2>
           <p className="mt-4 text-lg text-navy-600 max-w-2xl mx-auto">
@@ -101,7 +101,7 @@ export default function Contact() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={label}
-                className="flex items-center justify-center gap-2 rounded-xl border-2 border-navy-200 bg-white px-6 py-4 text-navy-700 transition-all hover:border-navy-600 hover:bg-navy-50 hover:text-navy-950 focus-visible:ring-2 focus-visible:ring-navy-600 focus-visible:ring-offset-2"
+                className="flex items-center justify-center gap-2 rounded-xl border-2 border-navy-200 bg-white px-6 py-4 text-navy-700 shadow-sm transition-all hover:border-navy-500 hover:bg-navy-50 hover:text-navy-950 hover:shadow-[0_8px_24px_-8px_rgba(15,23,42,0.15)] hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-navy-600 focus-visible:ring-offset-2"
               >
                 {icons[key]}
                 <span className="font-semibold">{label}</span>

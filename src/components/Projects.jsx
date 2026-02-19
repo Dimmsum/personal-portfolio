@@ -18,7 +18,7 @@ function ImageCarousel({ images, title }) {
 
   return (
     <div className="mt-6 mb-6">
-      <div className="relative overflow-hidden rounded-xl border border-navy-200 bg-navy-50/30">
+      <div className="relative overflow-hidden rounded-xl border border-navy-200/80 bg-navy-50/50 shadow-sm">
         {/* Sliding track: one continuous strip for seamless transitions */}
         <div className="aspect-video w-full overflow-hidden">
           <motion.div
@@ -110,7 +110,7 @@ export default function Projects() {
   const activeProject = projects[activeIndex];
 
   return (
-    <section id="projects" className="bg-navy-50/50 py-20">
+    <section id="projects" className="relative py-24 bg-gradient-to-b from-navy-50/40 via-white to-navy-50/30">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <motion.h2
@@ -135,7 +135,7 @@ export default function Projects() {
 
         {/* File-storage style: list left, detail right */}
         <motion.div
-          className="mt-12 flex flex-col lg:flex-row gap-0 lg:gap-6 rounded-2xl border border-navy-200 bg-white shadow-lg overflow-hidden"
+          className="mt-12 flex flex-col lg:flex-row gap-0 lg:gap-6 rounded-2xl border border-navy-200/80 bg-white shadow-[0_10px_40px_-10px_rgba(15,23,42,0.12),0_4px_16px_-4px_rgba(15,23,42,0.06)] overflow-hidden"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -160,7 +160,12 @@ export default function Projects() {
                   }`}
                 >
                   <FileIcon />
-                  <span className="truncate">{project.title}</span>
+                  <span className="truncate flex-1 min-w-0">{project.title}</span>
+                  {project.freelance && (
+                    <span className="shrink-0 rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-800">
+                      Freelance
+                    </span>
+                  )}
                 </button>
               ))}
             </nav>
@@ -178,9 +183,16 @@ export default function Projects() {
                   transition={{ duration: 0.2 }}
                   className="p-6 sm:p-8"
                 >
-                  <h3 className="font-heading text-2xl font-bold text-navy-950">
-                    {activeProject.title}
-                  </h3>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <h3 className="font-heading text-2xl font-bold text-navy-950">
+                      {activeProject.title}
+                    </h3>
+                    {activeProject.freelance && (
+                      <span className="inline-flex items-center rounded-full border-2 border-amber-400 bg-amber-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-amber-800">
+                        Freelance project
+                      </span>
+                    )}
+                  </div>
                   {activeProject.techStack?.length > 0 && (
                     <div className="mt-5 mb-5 flex flex-wrap gap-2" aria-label="Technologies used">
                       {activeProject.techStack.map((tech, i) => (

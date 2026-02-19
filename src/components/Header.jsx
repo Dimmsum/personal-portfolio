@@ -15,7 +15,7 @@ export default function Header() {
   const handleNavClick = () => setMobileMenuOpen(false);
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-sm border-b border-navy-100 shadow-sm">
+    <header className="sticky top-0 z-50 w-full bg-white/90 backdrop-blur-md border-b border-navy-100/80 shadow-[0_1px_3px_0_rgba(15,23,42,0.06)]">
       <nav className="relative mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 py-4">
         {/* Logo/Name */}
         <a
@@ -41,7 +41,7 @@ export default function Header() {
             download="Dimetri Lee Resume.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-lg bg-navy-950 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-navy-900 transition-colors"
+            className="rounded-xl bg-navy-950 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_2px_10px_-2px_rgba(15,23,42,0.2)] transition-all hover:bg-navy-900 hover:shadow-[0_4px_16px_-4px_rgba(15,23,42,0.25)]"
           >
             Download CV
           </a>

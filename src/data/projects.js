@@ -12,10 +12,19 @@ export const projects = [
     techStack: ["Vite", "Supabase", "Gemini AI"],
     liveUrl: "https://notesreadily.vercel.app",
     githubUrl: "https://github.com/Dimmsum/readily-web",
-    screenshots: [
-      "https://placehold.co/800x450/1e3a5f/ffffff?text=Readily+1",
-      "https://placehold.co/800x450/243b53/ffffff?text=Readily+2",
-    ],
+    screenshots: ["/readilyLandingPage.jpeg"],
+  },
+  {
+    id: "7",
+    title: "Island Echoes Health",
+    category: "App",
+    freelance: true,
+    summary:
+      "Island Echoes Health is a medical platform that seeks to connect patients and Sponsors.",
+    techStack: ["Next.js", "Express.js", "Supabase"],
+    liveUrl: "#",
+    githubUrl: "#",
+    screenshots: ["/islandechoeshealthlanding.jpeg", "/islandechoeshealthsignin.jpeg"],
   },
   {
     id: "2",

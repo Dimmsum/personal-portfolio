@@ -10,11 +10,15 @@ const gridPattern = `url("data:image/svg+xml,%3Csvg width='40' height='40' viewB
 function App() {
   return (
     <div className="min-h-screen flex flex-col relative">
-      {/* Uniform grid background - entire portfolio */}
+      {/* Grid + subtle gradient overlay for depth */}
       <div
-        className="fixed inset-0 opacity-[0.08] pointer-events-none z-0"
+        className="fixed inset-0 pointer-events-none z-0"
         aria-hidden="true"
-        style={{ backgroundImage: gridPattern }}
+        style={{ backgroundImage: gridPattern, opacity: 0.06 }}
+      />
+      <div
+        className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-b from-transparent via-transparent to-navy-50/30"
+        aria-hidden="true"
       />
       <Header />
       <main className="flex-1 relative z-10">

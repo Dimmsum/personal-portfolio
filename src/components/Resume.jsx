@@ -3,7 +3,7 @@ import { resume } from '../data/resume'
 
 export default function Resume() {
   return (
-    <section id="resume" className="bg-white py-20">
+    <section id="resume" className="relative py-24 bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="lg:grid lg:grid-cols-12 lg:gap-12">
           {/* Formatted web version */}
@@ -13,7 +13,7 @@ export default function Resume() {
             viewport={{ once: true }}
             className="lg:col-span-8"
           >
-            <h2 className="font-heading text-3xl font-bold text-navy-950 sm:text-4xl">
+            <h2 className="font-heading text-3xl font-bold text-navy-950 sm:text-4xl tracking-tight">
               Resume
             </h2>
             <p className="mt-4 text-lg text-navy-600">
@@ -25,7 +25,7 @@ export default function Resume() {
               <h3 className="font-heading text-xl font-bold text-navy-950">Education</h3>
               <div className="mt-6 space-y-4">
                 {resume.education.map((edu, i) => (
-                  <div key={i} className="rounded-lg border border-navy-200 bg-navy-50/50 p-4">
+                  <div key={i} className="rounded-xl border border-navy-200/80 bg-navy-50/40 p-5 shadow-sm">
                     <h4 className="font-heading font-semibold text-navy-950">{edu.degree}</h4>
                     <p className="text-navy-600">{edu.school}{edu.location && ` • ${edu.location}`}</p>
                     <p className="text-sm text-navy-500">{edu.period}</p>
@@ -96,7 +96,7 @@ export default function Resume() {
             viewport={{ once: true }}
             className="mt-12 lg:col-span-4 lg:mt-0"
           >
-            <div className="sticky top-24 rounded-2xl border border-navy-200 bg-navy-50/50 p-8 shadow-sm">
+            <div className="sticky top-24 rounded-2xl border border-navy-200/80 bg-gradient-to-br from-navy-50/80 to-white p-8 shadow-[0_4px_20px_-2px_rgba(15,23,42,0.08)]">
               <h3 className="font-heading text-lg font-bold text-navy-950">
                 Download PDF
               </h3>
@@ -108,7 +108,7 @@ export default function Resume() {
                 download="Dimetri Lee Resume.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-navy-950 px-6 py-4 font-semibold text-white shadow-lg hover:bg-navy-900 transition-colors"
+                className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-navy-950 px-6 py-4 font-semibold text-white shadow-[0_4px_20px_-2px_rgba(15,23,42,0.25)] transition-all hover:bg-navy-900 hover:shadow-[0_8px_30px_-4px_rgba(15,23,42,0.3)]"
               >
                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
