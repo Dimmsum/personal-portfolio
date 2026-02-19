@@ -6,6 +6,7 @@ const navLinks = [
   { href: "#home", label: "About" },
   { href: "#projects", label: "Projects" },
   { href: "#resume", label: "Resume" },
+  { href: "#contact", label: "Contact" },
 ];
 
 export default function Header() {
@@ -15,14 +16,22 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-sm border-b border-navy-100 shadow-sm">
-      <nav className="relative mx-auto flex max-w-7xl items-center justify-end px-4 sm:px-6 lg:px-8 py-4">
+      <nav className="relative mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 py-4">
+        {/* Logo/Name */}
+        <a
+          href="#home"
+          className="font-heading text-xl font-bold text-navy-950 hover:text-navy-700 transition-colors"
+        >
+          Dimetri Lee
+        </a>
+
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map(({ href, label }) => (
             <a
               key={href}
               href={href}
-              className="text-navy-700 hover:text-navy-950 font-medium transition-colors"
+              className="text-navy-700 hover:text-navy-950 font-medium transition-colors rounded px-1 py-0.5"
             >
               {label}
             </a>

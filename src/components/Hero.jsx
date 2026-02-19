@@ -4,7 +4,7 @@ import profileImage from "../assets/profile.png";
 export default function Hero() {
   return (
     <section id="home" className="relative overflow-hidden bg-white">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           {/* Left: Content */}
           <motion.div
@@ -20,10 +20,10 @@ export default function Hero() {
             <p className="font-heading mt-2 text-xl font-semibold text-navy-950 sm:text-2xl">
               Software Engineer
             </p>
+
             <p className="mt-6 text-lg leading-relaxed text-navy-700 max-w-xl">
               I build full-stack applications, RESTful APIs, and cross-platform
-              mobile apps. Currently interning at Intellibus and Sagicor
-              Innovation Lab, where I work on scalable backend systems and
+              mobile apps with a focus on scalable backend systems and
               user-friendly frontends.
             </p>
             <div className="mt-10 flex flex-wrap gap-4">
@@ -53,11 +53,10 @@ export default function Hero() {
             className="relative order-1 lg:order-2 flex justify-center lg:justify-end"
           >
             {/* Decorative circles */}
-            <div className="absolute -right-4 -top-4 h-72 w-72 rounded-full border-2 border-navy-200/60" />
-            <div className="absolute -bottom-2 -right-8 h-48 w-48 rounded-full bg-navy-100/40" />
-            <div className="absolute right-1/4 top-1/4 h-24 w-24 rounded-full bg-navy-200/30" />
+            <div className="absolute -right-4 -top-4 h-72 w-72 rounded-full border-2 border-navy-200/60 pointer-events-none" />
+            <div className="absolute -bottom-2 -right-8 h-48 w-48 rounded-full bg-navy-100/40 pointer-events-none" />
+            <div className="absolute right-1/4 top-1/4 h-24 w-24 rounded-full bg-navy-200/30 pointer-events-none" />
 
-            {/* Image container - crops and frames the photo */}
             <div className="relative z-10 w-72 h-72 sm:w-80 sm:h-80 lg:w-96 lg:h-96 overflow-hidden rounded-full border-4 border-white shadow-2xl ring-2 ring-navy-200/50">
               <img
                 src={profileImage}

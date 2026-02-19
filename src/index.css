@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap");
 @import "tailwindcss";
 
 @theme {
@@ -33,13 +33,53 @@
     scroll-behavior: smooth;
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
   body {
     font-family: var(--font-body);
     color: var(--color-navy-950);
     background-color: white;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: var(--font-heading);
+  }
+
+  /* Focus styles for keyboard navigation and accessibility */
+  a:focus-visible,
+  button:focus-visible {
+    outline: 2px solid var(--color-navy-600);
+    outline-offset: 2px;
+  }
+
+  a:focus:not(:focus-visible),
+  button:focus:not(:focus-visible) {
+    outline: none;
+  }
+}
+
+@keyframes spin-reverse {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@utility animate-spin-reverse {
+  animation: spin-reverse 12s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-spin,
+  .animate-spin-reverse {
+    animation: none;
   }
 }
