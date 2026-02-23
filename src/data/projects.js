@@ -12,7 +12,12 @@ export const projects = [
     techStack: ["Vite", "Supabase", "Gemini AI"],
     liveUrl: "https://notesreadily.vercel.app",
     githubUrl: "https://github.com/Dimmsum/readily-web",
-    screenshots: ["/readilyLandingPage.jpeg"],
+    screenshots: [
+      "/readilyLandingPage.png",
+      "/readily%20signup.png",
+      "/readilyDashboard.png",
+      "/readilyEditor.png",
+    ],
   },
   {
     id: "7",
@@ -35,10 +40,7 @@ export const projects = [
     techStack: ["React Native", "Expo", "Supabase", "Express.js"],
     liveUrl: "#",
     githubUrl: "#",
-    screenshots: [
-      "https://placehold.co/800x450/1e3a5f/ffffff?text=Campus+Cart+1",
-      "https://placehold.co/800x450/243b53/ffffff?text=Campus+Cart+2",
-    ],
+    screenshots: [],
   },
   {
     id: "1",
@@ -60,10 +62,7 @@ export const projects = [
     techStack: ["Next.js", "Firebase", "RagKernel", "OpenRouter"],
     liveUrl: "#",
     githubUrl: "#",
-    screenshots: [
-      "https://placehold.co/800x450/1e3a5f/ffffff?text=CuraEase+1",
-      "https://placehold.co/800x450/243b53/ffffff?text=CuraEase+2",
-    ],
+    screenshots: [],
   },
   {
     id: "4",
@@ -74,23 +73,6 @@ export const projects = [
     techStack: ["ReactJS", "Mapbox API", "Microsoft Azure"],
     liveUrl: "#",
     githubUrl: "#",
-    screenshots: [
-      "https://placehold.co/800x450/1e3a5f/ffffff?text=Quests+1",
-      "https://placehold.co/800x450/243b53/ffffff?text=Quests+2",
-    ],
-  },
-  {
-    id: "5",
-    title: "University Web Application",
-    category: "App",
-    summary:
-      "Responsive web application supporting a university population of 12,000+ students, with an accompanying cross-platform mobile app for modern, consistent UI/UX across devices.",
-    techStack: ["Angular", "SCSS", "Bootstrap", "Ionic Framework"],
-    liveUrl: "#",
-    githubUrl: "#",
-    screenshots: [
-      "https://placehold.co/800x450/1e3a5f/ffffff?text=University+App+1",
-      "https://placehold.co/800x450/243b53/ffffff?text=University+App+2",
-    ],
+    screenshots: [],
   },
 ];
