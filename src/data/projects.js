@@ -27,9 +27,17 @@ export const projects = [
     summary:
       "Island Echoes Health is a medical platform that seeks to connect patients and Sponsors.",
     techStack: ["Next.js", "Express.js", "Supabase"],
-    liveUrl: "#",
+    liveUrl: "https://island-echoes-health-web.vercel.app",
     githubUrl: "#",
-    screenshots: ["/islandechoeshealthlanding.jpeg", "/islandechoeshealthsignin.jpeg"],
+    screenshots: [
+      "/islandechoeshealthlanding.jpeg",
+      "/islandechoeshealthsignin.jpeg",
+      "/islandechoes1.png",
+      "/islandechoes2.png",
+      "/islandechoeshealth3.jpeg",
+      "/islandechoeshealth4.png",
+      "/islandechoeshealth5.png",
+    ],
   },
   {
     id: "2",
