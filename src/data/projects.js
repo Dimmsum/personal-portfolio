@@ -37,6 +37,8 @@ export const projects = [
       "/islandechoeshealth3.jpeg",
       "/islandechoeshealth4.png",
       "/islandechoeshealth5.png",
+      "/islandechoeshealth6.png",
+      "/islandechoeshealth7.png",
     ],
   },
   {
