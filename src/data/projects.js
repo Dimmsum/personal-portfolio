@@ -80,7 +80,7 @@ export const projects = [
     category: "App",
     summary:
       "Location-based progressive web app enabling users to request help or connect socially with nearby individuals, incentivized by optional tips. Microsoft Hackathon Finalist.",
-    techStack: ["ReactJS", "Mapbox API", "Microsoft Azure"],
+    techStack: ["ReactJS", "Mapbox API", "Microsoft Azure", "Firebase"],
     liveUrl: "#",
     githubUrl: "#",
     screenshots: [],

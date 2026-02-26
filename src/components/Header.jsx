@@ -29,7 +29,7 @@ export default function Header() {
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map(({ href, label }) => (
             <a
-              key={href}
+              key={label}
               href={href}
               className="text-navy-700 hover:text-navy-950 font-medium transition-colors rounded px-1 py-0.5"
             >
@@ -93,7 +93,7 @@ export default function Header() {
             <div className="space-y-1 px-4 py-4">
               {navLinks.map(({ href, label }) => (
                 <a
-                  key={href}
+                  key={label}
                   href={href}
                   onClick={handleNavClick}
                   className="block rounded-lg px-4 py-3 text-navy-700 hover:bg-navy-100 font-medium"

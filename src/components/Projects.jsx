@@ -1,93 +1,244 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { projects } from "../data/projects";
 
-function ImageCarousel({ images, title }) {
-  const [current, setCurrent] = useState(0);
-  const count = images.length;
+const PREVIEW_COUNT = 3;
 
-  useEffect(() => {
-    setCurrent(0);
-  }, [images]);
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.07, delayChildren: 0.05 },
+  },
+};
 
-  if (count === 0) return null;
+const itemVariants = {
+  hidden: { opacity: 0, y: 12 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] },
+  },
+};
 
-  const goTo = (index) => {
-    setCurrent((index + count) % count);
-  };
+const backdropVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1 },
+  exit: { opacity: 0 },
+};
+
+const modalVariants = {
+  hidden: { opacity: 0, scale: 0.96 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.25, ease: [0.22, 1, 0.36, 1] },
+  },
+  exit: { opacity: 0, scale: 0.96 },
+};
+
+function ProjectScreenshots({ images, title }) {
+  const [viewMoreOpen, setViewMoreOpen] = useState(false);
+  const [enlargedIndex, setEnlargedIndex] = useState(null);
+  if (!images?.length) return null;
+
+  const previewImages = images.slice(0, PREVIEW_COUNT);
+  const hasMore = images.length > PREVIEW_COUNT;
+  const closeEnlarged = () => setEnlargedIndex(null);
+  const goPrev = () => setEnlargedIndex((i) => (i != null && i > 0 ? i - 1 : images.length - 1));
+  const goNext = () => setEnlargedIndex((i) => (i != null && i < images.length - 1 ? i + 1 : 0));
 
   return (
     <div className="mt-6 mb-6">
-      <div className="relative overflow-hidden rounded-xl border border-navy-200/80 bg-navy-50/50 shadow-sm">
-        {/* Sliding track: one continuous strip for seamless transitions */}
-        <div className="aspect-video w-full overflow-hidden">
-          <motion.div
-            className="flex h-full"
-            style={{ width: `${count * 100}%` }}
-            animate={{ x: `-${current * (100 / count)}%` }}
-            transition={{ type: "tween", ease: [0.32, 0.72, 0, 1], duration: 0.5 }}
-          >
-            {images.map((src, i) => (
-              <div
-                key={i}
-                className="flex h-full shrink-0 items-center justify-center"
-                style={{ width: `${100 / count}%` }}
-              >
-                <img
-                  src={src}
-                  alt={`${title} — image ${i + 1} of ${count}`}
-                  className="max-h-full w-full object-contain object-center"
-                />
-              </div>
-            ))}
-          </motion.div>
+      {/* Rectangle with grid of ~3 screens */}
+      <motion.div
+        className="rounded-xl border border-navy-200/80 bg-navy-50/40 shadow-sm overflow-hidden"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        <div className="grid grid-cols-3 gap-1 sm:gap-2 p-1 sm:p-2">
+          {previewImages.map((src, i) => (
+            <motion.div
+              key={`${src}-${i}`}
+              variants={itemVariants}
+              className="group relative aspect-video overflow-hidden rounded-lg bg-navy-100/50"
+            >
+              <motion.img
+                src={src}
+                alt={`${title} — screenshot ${i + 1}`}
+                className="h-full w-full object-cover object-top transition-transform duration-300 group-hover:scale-[1.04]"
+                loading="lazy"
+              />
+            </motion.div>
+          ))}
         </div>
 
-        {count > 1 && (
+        {hasMore && (
+          <motion.div
+            variants={itemVariants}
+            className="px-2 pb-2 sm:px-3 sm:pb-3"
+          >
+            <button
+              type="button"
+              onClick={() => setViewMoreOpen(true)}
+              className="w-full flex items-center justify-center gap-2 rounded-lg border-2 border-dashed border-navy-300 bg-navy-50/60 py-2.5 text-sm font-semibold text-navy-700 transition-colors hover:border-navy-400 hover:bg-navy-100/60 focus:outline-none focus:ring-2 focus:ring-navy-400 focus:ring-offset-2"
+            >
+              <motion.span
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                View more
+              </motion.span>
+              <span className="text-navy-500">({images.length} screens)</span>
+            </button>
+          </motion.div>
+        )}
+      </motion.div>
+
+      {/* Modal: all screens */}
+      <AnimatePresence>
+        {viewMoreOpen && (
           <>
-            {/* Prev/Next: minimal, only on hover/focus for cleaner look */}
-            <button
-              type="button"
-              onClick={() => goTo(current - 1)}
-              className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-2.5 text-navy-700 shadow-lg backdrop-blur-sm transition-all hover:bg-white hover:scale-110 focus:outline-none focus:ring-2 focus:ring-navy-500 focus:ring-offset-2"
-              aria-label="Previous image"
+            <motion.div
+              role="dialog"
+              aria-modal="true"
+              aria-label={`All screens for ${title}`}
+              variants={backdropVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-950/70 backdrop-blur-sm"
+              onClick={() => { setViewMoreOpen(false); setEnlargedIndex(null); }}
             >
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-            <button
-              type="button"
-              onClick={() => goTo(current + 1)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-2.5 text-navy-700 shadow-lg backdrop-blur-sm transition-all hover:bg-white hover:scale-110 focus:outline-none focus:ring-2 focus:ring-navy-500 focus:ring-offset-2"
-              aria-label="Next image"
-            >
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-            {/* Dots: pill indicator with smooth sliding highlight */}
-            <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5 rounded-full bg-black/20 px-2.5 py-2 backdrop-blur-sm">
-              {images.map((_, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => setCurrent(i)}
-                  className="relative rounded-full p-1 transition-colors hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/50"
-                  aria-label={`Go to image ${i + 1}`}
-                  aria-current={i === current ? "true" : undefined}
-                >
-                  <span
-                    className={`block h-1.5 w-1.5 rounded-full transition-all duration-300 ${
-                      i === current ? "bg-white scale-125" : "bg-white/60 hover:bg-white/80"
-                    }`}
-                  />
-                </button>
-              ))}
-            </div>
+              <motion.div
+                variants={modalVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                className="relative max-h-[90vh] w-full max-w-4xl overflow-hidden rounded-2xl border border-navy-200/80 bg-white shadow-2xl"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="sticky top-0 z-10 flex items-center justify-between border-b border-navy-200 bg-white/95 px-4 py-3 backdrop-blur-sm">
+                  <h4 className="font-heading text-lg font-semibold text-navy-950">
+                    {title} — all screens
+                  </h4>
+                  <button
+                    type="button"
+                    onClick={() => { setViewMoreOpen(false); setEnlargedIndex(null); }}
+                    className="rounded-lg p-2 text-navy-600 hover:bg-navy-100 hover:text-navy-900 focus:outline-none focus:ring-2 focus:ring-navy-400"
+                    aria-label="Close"
+                  >
+                    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+                <div className="overflow-y-auto max-h-[calc(90vh-56px)] p-4">
+                  <motion.div
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    {images.map((src, i) => (
+                      <motion.button
+                        type="button"
+                        key={`modal-${src}-${i}`}
+                        variants={itemVariants}
+                        onClick={() => setEnlargedIndex(i)}
+                        className="group relative overflow-hidden rounded-xl border border-navy-200/80 bg-navy-50/40 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-navy-400 focus:ring-offset-2"
+                      >
+                        <div className="aspect-video w-full overflow-hidden">
+                          <motion.img
+                            src={src}
+                            alt={`${title} — screenshot ${i + 1}`}
+                            className="h-full w-full object-cover object-top transition-transform duration-300 group-hover:scale-[1.02]"
+                            loading="lazy"
+                          />
+                        </div>
+                        <span className="sr-only">Enlarge screenshot {i + 1}</span>
+                      </motion.button>
+                    ))}
+                  </motion.div>
+                </div>
+              </motion.div>
+
+              {/* Enlarged lightbox when a screen is clicked */}
+              <AnimatePresence>
+                {enlargedIndex != null && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-navy-950/20 backdrop-blur-md"
+                    onClick={closeEnlarged}
+                  >
+                    <motion.div
+                      initial={{ scale: 0.96, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0.96, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="relative flex max-h-[75vh] w-full max-w-4xl flex-col rounded-2xl border border-navy-200/80 bg-white shadow-2xl overflow-hidden"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className="flex shrink-0 items-center justify-end gap-2 border-b border-navy-100 px-3 py-2">
+                        {images.length > 1 && (
+                          <span className="mr-auto text-sm text-navy-500">
+                            {enlargedIndex + 1} / {images.length}
+                          </span>
+                        )}
+                        <button
+                          type="button"
+                          onClick={closeEnlarged}
+                          className="rounded-lg p-2 text-navy-600 hover:bg-navy-100 focus:outline-none focus:ring-2 focus:ring-navy-400"
+                          aria-label="Close enlarged view"
+                        >
+                          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                      <div className="relative flex flex-1 min-h-0 items-center justify-center p-4">
+                        {images.length > 1 && (
+                          <>
+                            <button
+                              type="button"
+                              onClick={goPrev}
+                              className="absolute left-2 top-1/2 -translate-y-1/2 z-10 rounded-full bg-navy-100 p-2 text-navy-700 hover:bg-navy-200 focus:outline-none focus:ring-2 focus:ring-navy-400"
+                              aria-label="Previous screenshot"
+                            >
+                              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                              </svg>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={goNext}
+                              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 rounded-full bg-navy-100 p-2 text-navy-700 hover:bg-navy-200 focus:outline-none focus:ring-2 focus:ring-navy-400"
+                              aria-label="Next screenshot"
+                            >
+                              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                              </svg>
+                            </button>
+                          </>
+                        )}
+                        <img
+                          src={images[enlargedIndex]}
+                          alt={`${title} — screenshot ${enlargedIndex + 1}`}
+                          className="max-h-[60vh] max-w-full object-contain rounded-lg"
+                        />
+                      </div>
+                    </motion.div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
           </>
         )}
-      </div>
+      </AnimatePresence>
     </div>
   );
 }
@@ -205,7 +356,7 @@ export default function Projects() {
                       ))}
                     </div>
                   )}
-                  <ImageCarousel
+                  <ProjectScreenshots
                     images={activeProject.screenshots || []}
                     title={activeProject.title}
                   />
