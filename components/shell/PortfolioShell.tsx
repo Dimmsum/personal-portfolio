@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { LeftSidebar } from "./LeftSidebar";
-import { TopBar } from "./TopBar";
 
 const LS_LEFT = "portfolio:leftCollapsed";
 
@@ -34,10 +33,7 @@ export function PortfolioShell({ children }: { children: React.ReactNode }) {
       </aside>
 
       <main className="flex-1 min-w-0 overflow-hidden rounded-lg bg-[var(--bg-elevated)]">
-        <div className="flex h-full flex-col">
-          <TopBar />
-          <div className="flex-1 overflow-y-auto scrollbar-thin">{children}</div>
-        </div>
+        <div className="h-full overflow-y-auto scrollbar-thin">{children}</div>
       </main>
     </div>
   );

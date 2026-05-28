@@ -201,99 +201,50 @@ function FeaturedProjectCard({ project }: { project: Project }) {
   const slug = project.slug.replace(/-/g, "_");
   return (
     <Link href={`/projects/${project.slug}`}>
-      <article className="group flex flex-col overflow-hidden rounded-xl bg-[var(--bg-card)] shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-card-hover)] transition-all duration-200">
+      <article className="group overflow-hidden rounded-xl shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-card-hover)] transition-all duration-200 bg-[var(--bg-card)]">
 
-        {/* ── Terminal window ── */}
-        <div className="rounded-t-xl overflow-hidden" style={{ background: "#1c1c1e" }}>
-          {/* Title bar */}
-          <div className="flex items-center gap-0 px-4 py-3" style={{ background: "#2c2c2e" }}>
-            <div className="flex items-center gap-1.5">
-              <span className="h-3 w-3 rounded-full" style={{ background: "#ff5f57" }} />
-              <span className="h-3 w-3 rounded-full" style={{ background: "#febc2e" }} />
-              <span className="h-3 w-3 rounded-full" style={{ background: "#28c840" }} />
-            </div>
-            <span className="flex-1 text-center text-xs font-medium" style={{ color: "#8e8e93", fontFamily: "ui-monospace, monospace" }}>
-              {slug}.sh
-            </span>
+        {/* ── Title bar ── */}
+        <div className="flex items-center px-4 py-3 bg-[var(--bg-elevated)]">
+          <div className="flex items-center gap-1.5">
+            <span className="h-3 w-3 rounded-full" style={{ background: "#ff5f57" }} />
+            <span className="h-3 w-3 rounded-full" style={{ background: "#febc2e" }} />
+            <span className="h-3 w-3 rounded-full" style={{ background: "#28c840" }} />
           </div>
-
-          {/* Terminal body */}
-          <div className="px-4 py-4 font-mono text-xs leading-6 select-none" style={{ fontFamily: "ui-monospace, 'Cascadia Code', 'Fira Code', monospace", minHeight: "9rem" }}>
-            <p>
-              <span style={{ color: "#28c840" }}>➜</span>
-              <span style={{ color: "#58a6ff" }}> ~/projects</span>
-              <span style={{ color: "#e6edf3" }}> cat README.md</span>
-            </p>
-            <p style={{ color: "#e6edf3" }} className="mt-1">
-              <span style={{ color: "#febc2e" }}># </span>{project.name}
-            </p>
-            <p style={{ color: "#8e8e93" }}>{project.tagline}</p>
-            <p className="mt-2">
-              <span style={{ color: "#8e8e93" }}>status  </span>
-              <span style={{ color: project.status === "in-progress" ? "#28c840" : project.status === "completed" ? "#58a6ff" : "#8e8e93" }}>
-                {project.status}
-              </span>
-            </p>
-            <p>
-              <span style={{ color: "#8e8e93" }}>tags    </span>
-              <span style={{ color: "#e6edf3" }}>{project.tags.join(", ")}</span>
-            </p>
-            <p className="mt-2">
-              <span style={{ color: "#28c840" }}>➜</span>
-              <span style={{ color: "#58a6ff" }}> ~/projects</span>
-              <span className="inline-block w-2 h-4 ml-1 align-middle animate-pulse" style={{ background: "#e6edf3", opacity: 0.8 }} />
-            </p>
-          </div>
+          <span className="flex-1 text-center text-xs font-medium text-[var(--text-dim)]" style={{ fontFamily: "ui-monospace, monospace" }}>
+            {slug}.sh
+          </span>
         </div>
 
-        <div className="flex flex-col gap-3 p-5">
-          <p className="text-sm leading-6 text-[var(--text-muted)] line-clamp-2">
-            {project.description}
+        {/* ── Terminal body ── */}
+        <div className="px-4 py-4 text-xs leading-6 select-none" style={{ fontFamily: "ui-monospace, 'Cascadia Code', 'Fira Code', monospace", minHeight: "9rem" }}>
+          <p>
+            <span style={{ color: "#28c840" }}>➜</span>
+            <span style={{ color: "#58a6ff" }}> ~/projects</span>
+            <span className="text-[var(--text-primary)]"> cat README.md</span>
           </p>
-          <div className="flex flex-wrap gap-1.5">
-            {project.tags.map((t) => (
-              <ProjectTag key={t} tag={t} />
-            ))}
-          </div>
+          <p className="mt-1">
+            <span style={{ color: "#febc2e" }}># </span>
+            <span className="text-[var(--text-primary)]">{project.name}</span>
+          </p>
+          <p className="text-[var(--text-muted)]">{project.tagline}</p>
+          <p className="mt-2">
+            <span className="text-[var(--text-dim)]">status  </span>
+            <span style={{ color: project.status === "in-progress" ? "#28c840" : project.status === "completed" ? "#58a6ff" : "var(--text-dim)" }}>
+              {project.status}
+            </span>
+          </p>
+          <p>
+            <span className="text-[var(--text-dim)]">stack   </span>
+            <span className="text-[var(--text-muted)]">{project.tags.join(", ")}</span>
+          </p>
+          <p className="mt-2">
+            <span style={{ color: "#28c840" }}>➜</span>
+            <span style={{ color: "#58a6ff" }}> ~/projects</span>
+            <span className="inline-block w-2 h-4 ml-1 align-middle animate-pulse bg-[var(--text-primary)]" style={{ opacity: 0.8 }} />
+          </p>
         </div>
       </article>
     </Link>
-  );
-}
-
-function ProjectTag({ tag }: { tag: string }) {
-  const colorMap: Record<string, string> = {
-    "next.js": "#38bdf8",
-    react: "#61dafb",
-    typescript: "#3178c6",
-    tailwind: "#38bdf8",
-    "node.js": "#5fa04e",
-    webgl: "#cc0000",
-    golang: "#00add8",
-    security: "#ef4444",
-    ai: "#a855f7",
-    design: "#f59e0b",
-    gin: "#00b4b6",
-    docker: "#2496ed",
-    redis: "#d82c20",
-    experiment: "#6366f1",
-    photography: "#f97316",
-    music: "#ec4899",
-    process: "#14b8a6",
-    meta: "#8b5cf6",
-  };
-  const color = colorMap[tag.toLowerCase()] ?? "var(--text-dim)";
-  return (
-    <span
-      className="rounded-full px-2.5 py-0.5 text-[11px] font-medium border"
-      style={{
-        color,
-        borderColor: `${color}40`,
-        backgroundColor: `${color}14`,
-      }}
-    >
-      {tag}
-    </span>
   );
 }
 
