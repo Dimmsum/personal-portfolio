@@ -24,7 +24,7 @@ export function PortfolioShell({ children }: { children: React.ReactNode }) {
     <div className="flex h-full w-full gap-2 p-2">
       <aside
         className={`${
-          leftCollapsed ? "w-[72px]" : "w-[320px]"
+          leftCollapsed ? "w-14" : "w-[320px]"
         } shrink-0 transition-[width] duration-300 ease-in-out`}
       >
         <LeftSidebar

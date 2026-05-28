@@ -2,207 +2,214 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useMemo } from "react";
-import { posts } from "@/lib/content/posts";
 import { profile } from "@/lib/content/profile";
-import { projects } from "@/lib/content/projects";
-import { CollapseToggle } from "./CollapseToggle";
 
 type Props = {
   collapsed: boolean;
   onToggle: () => void;
 };
 
-// ─── Main component ───────────────────────────────────────────────────────────
-
 export function LeftSidebar({ collapsed, onToggle }: Props) {
-  const sortedPosts = useMemo(
-    () => [...posts].sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1)).slice(0, 2),
-    []
-  );
-
-  return (
-    <div className={`flex h-full flex-col overflow-hidden rounded-lg bg-[var(--bg-elevated)] ${collapsed ? "cursor-pointer" : ""}`}>
-      {/* Collapse toggle — centered when collapsed, right-aligned when expanded */}
-      <div className={`flex items-center px-2 pt-2 pb-1 ${collapsed ? "justify-center" : "justify-end"}`}>
-        <CollapseToggle side="left" collapsed={collapsed} onToggle={onToggle} />
-      </div>
-
-      {/* Primary nav — vertically stacked */}
-      <div className={`flex flex-col gap-0.5 pb-1 ${collapsed ? "items-center px-0" : "px-2"}`}>
-        <NavItem
-          icon={<PersonIcon />}
-          label="About Me"
-          href="/about"
-          collapsed={collapsed}
-          preview={
-            <div className="flex flex-col gap-0.5">
-              <div className="font-medium text-[var(--text-muted)]">{profile.displayName ?? profile.name}</div>
-              <div className="text-[var(--text-dim)]">{profile.role}</div>
-              <p className="mt-1 line-clamp-2 text-[var(--text-dim)]">{profile.bio}</p>
-            </div>
-          }
-        />
-        <NavItem
-          icon={<FolderIcon />}
-          label="Projects"
-          href="/projects"
-          collapsed={collapsed}
-          preview={
-            <div className="flex flex-col gap-0.5">
-              {projects.slice(0, 3).map((p) => (
-                <div key={p.slug} className="truncate text-[var(--text-muted)]">{p.name}</div>
-              ))}
-            </div>
-          }
-        />
-        <NavItem
-          icon={<DocumentIcon />}
-          label="Posts"
-          href="/posts"
-          collapsed={collapsed}
-          preview={
-            <div className="flex flex-col gap-1">
-              {sortedPosts.map((p) => (
-                <div key={p.slug} className="flex items-baseline justify-between gap-2">
-                  <span className="truncate text-[var(--text-muted)]">{p.title}</span>
-                  <span className="shrink-0 text-[var(--text-dim)]">{formatDate(p.publishedAt)}</span>
-                </div>
-              ))}
-            </div>
-          }
-        />
-      </div>
-
-      {/* Misc section — pinned to bottom */}
-      <div className="mt-auto shrink-0 border-t border-[var(--border-subtle)] py-2 px-2">
-        <MiscItem href="/notes"  icon={<NotesIcon />}  label="Notes"  collapsed={collapsed} />
-        <MiscItem href="/resume" icon={<ResumeIcon />} label="Resume" collapsed={collapsed} />
-      </div>
-    </div>
-  );
-}
-
-// ─── Nav item ─────────────────────────────────────────────────────────────────
-
-function NavItem({
-  icon,
-  label,
-  href,
-  collapsed,
-  preview,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  href: string;
-  collapsed: boolean;
-  preview?: React.ReactNode;
-}) {
   const pathname = usePathname();
-  const active = pathname.startsWith(href);
+
+  const navItems = [
+    { href: "/", icon: <HomeIcon />, label: "Overview", exact: true },
+    { href: "/about", icon: <PersonIcon />, label: "About" },
+    { href: "/projects", icon: <FolderIcon />, label: "Projects" },
+    { href: "/posts", icon: <DocumentIcon />, label: "Posts" },
+  ];
+
+  const pinnedItems = [
+    { href: "/notes", icon: <NotesIcon />, label: "Notes" },
+    { href: "/resume", icon: <ResumeIcon />, label: "Resume" },
+  ];
 
   return (
-    <div className="group">
-      <Link
-        href={href}
-        title={label}
-        className={`flex items-center rounded-md transition-colors ${
-          collapsed ? "h-9 w-9 justify-center" : "w-full gap-2 px-2 py-1.5"
-        } ${
-          active
-            ? "bg-[var(--accent)]/10 text-[var(--accent)]"
-            : "text-[var(--text-muted)] hover:bg-[var(--bg-highlight)] hover:text-[var(--text-primary)]"
+    <div className="flex h-full flex-col overflow-hidden rounded-lg bg-[var(--bg-elevated)]">
+
+      {/* ── Header ─────────────────────────────────────────────────────── */}
+      <div className="flex shrink-0 items-center py-2.5">
+        {/* Avatar — always in the icon column, toggles sidebar */}
+        <div className="flex w-10 shrink-0 items-center justify-center ml-2">
+          <button
+            type="button"
+            onClick={onToggle}
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            aria-expanded={!collapsed}
+            className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--accent)] text-white transition-opacity hover:opacity-80"
+          >
+            <span className="text-xs font-bold tracking-tight">DL</span>
+          </button>
+        </div>
+
+        {/* Name + role */}
+        <div
+          className={`flex min-w-0 flex-1 items-center gap-1.5 overflow-hidden pl-2.5 transition-[opacity] duration-200 ${
+            collapsed ? "opacity-0 pointer-events-none" : "opacity-100"
+          }`}
+        >
+          <div className="min-w-0 flex-1">
+            <div className="truncate text-sm font-semibold text-[var(--text-primary)]">
+              {profile.displayName}
+            </div>
+            <div className="truncate text-xs text-[var(--text-muted)]">{profile.role}</div>
+          </div>
+          <button
+            type="button"
+            onClick={onToggle}
+            aria-label="Collapse sidebar"
+            tabIndex={collapsed ? -1 : 0}
+            className="mr-2 flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-[var(--text-dim)] transition-colors hover:bg-[var(--bg-highlight)] hover:text-[var(--text-muted)]"
+          >
+            <CollapseIcon />
+          </button>
+        </div>
+      </div>
+
+      {/* ── Search ─────────────────────────────────────────────────────── */}
+      <div
+        className={`overflow-hidden transition-[max-height,opacity] duration-200 ${
+          collapsed ? "max-h-0 opacity-0" : "max-h-14 opacity-100"
         }`}
       >
-        <span className="flex h-7 w-7 shrink-0 items-center justify-center">
-          {icon}
-        </span>
-        <span className={`overflow-hidden whitespace-nowrap text-sm font-bold transition-[opacity,max-width] ${
-          collapsed ? "max-w-0 opacity-0 duration-150" : "max-w-[200px] opacity-100 duration-200 delay-[160ms]"
-        }`}>
-          {label}
-        </span>
-      </Link>
-      {!collapsed && preview && (
-        <div className="max-h-0 overflow-hidden transition-all duration-200 ease-out group-hover:max-h-48">
-          <div className="px-2 pb-2 pt-0.5 text-xs">
-            {preview}
+        <div className="px-3 pb-3">
+          <div className="flex h-8 items-center gap-2 rounded-md bg-[var(--bg-highlight)] px-2.5">
+            <SearchIcon />
+            <span className="flex-1 text-sm text-[var(--text-dim)]">Search</span>
+            <kbd className="rounded bg-[var(--bg-base)] px-1.5 py-px text-[10px] text-[var(--text-dim)]">
+              ⌘K
+            </kbd>
           </div>
         </div>
-      )}
+      </div>
+
+      {/* ── Primary nav ────────────────────────────────────────────────── */}
+      <nav className="flex shrink-0 flex-col gap-px">
+        {navItems.map((item) => {
+          const active = item.exact ? pathname === item.href : pathname.startsWith(item.href);
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              title={collapsed ? item.label : undefined}
+              className={`mx-2 flex h-8 items-center rounded-md transition-colors ${
+                active
+                  ? "bg-[var(--accent)]/10 text-[var(--accent)]"
+                  : "text-[var(--text-muted)] hover:bg-[var(--bg-highlight)] hover:text-[var(--text-primary)]"
+              }`}
+            >
+              {/* Icon — fixed 40 px column so it never moves */}
+              <span
+                className={`flex w-10 shrink-0 items-center justify-center ${
+                  active ? "text-[var(--accent)]" : "text-[var(--text-dim)]"
+                }`}
+              >
+                {item.icon}
+              </span>
+              {/* Label — slides away when collapsed */}
+              <span
+                className={`overflow-hidden whitespace-nowrap text-sm font-medium transition-[max-width,opacity] duration-200 ${
+                  collapsed ? "max-w-0 opacity-0" : "max-w-[200px] opacity-100 pr-2"
+                }`}
+              >
+                {item.label}
+              </span>
+            </Link>
+          );
+        })}
+      </nav>
+
+      {/* ── Pinned section ─────────────────────────────────────────────── */}
+      <div className="mt-3">
+        {/* Section header — hidden when collapsed */}
+        <div
+          className={`overflow-hidden transition-[max-height,opacity] duration-200 ${
+            collapsed ? "max-h-0 opacity-0" : "max-h-8 opacity-100"
+          }`}
+        >
+          <div className="mb-0.5 flex items-center justify-between px-4 py-0.5">
+            <div className="flex items-center gap-1 text-[var(--text-dim)]">
+              <ChevronDownIcon />
+              <span className="text-xs font-medium">Pinned</span>
+            </div>
+            <button
+              type="button"
+              aria-label="Add pinned item"
+              className="flex h-5 w-5 items-center justify-center rounded text-[var(--text-dim)] transition-colors hover:bg-[var(--bg-highlight)] hover:text-[var(--text-muted)]"
+            >
+              <PlusIcon />
+            </button>
+          </div>
+        </div>
+
+        {/* Pinned items */}
+        <div className="flex flex-col gap-px">
+          {pinnedItems.map((item) => {
+            const active = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                title={collapsed ? item.label : undefined}
+                className={`mx-2 flex h-8 items-center rounded-md transition-colors ${
+                  active
+                    ? "bg-[var(--accent)]/10 text-[var(--accent)]"
+                    : "text-[var(--text-muted)] hover:bg-[var(--bg-highlight)] hover:text-[var(--text-primary)]"
+                }`}
+              >
+                <span
+                  className={`flex w-10 shrink-0 items-center justify-center ${
+                    active ? "text-[var(--accent)]" : "text-[var(--text-dim)]"
+                  }`}
+                >
+                  {item.icon}
+                </span>
+                <span
+                  className={`overflow-hidden whitespace-nowrap text-sm transition-[max-width,opacity] duration-200 ${
+                    collapsed ? "max-w-0 opacity-0" : "max-w-[200px] opacity-100 pr-2"
+                  }`}
+                >
+                  {item.label}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
-}
-
-// ─── Misc section item ────────────────────────────────────────────────────────
-
-function MiscItem({
-  href,
-  icon,
-  label,
-  collapsed,
-}: {
-  href: string;
-  icon: React.ReactNode;
-  label: string;
-  collapsed: boolean;
-}) {
-  const pathname = usePathname();
-  const active = pathname === href;
-  return (
-    <Link
-      href={href}
-      title={label}
-      className={`flex items-center gap-3 rounded-md px-2 py-2 transition-colors ${
-        active ? "bg-[var(--bg-highlight)]" : "hover:bg-[var(--bg-highlight)]"
-      }`}
-    >
-      <span
-        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-md ${
-          active ? "text-[var(--accent)]" : "text-[var(--text-muted)]"
-        }`}
-      >
-        {icon}
-      </span>
-      <span className={`overflow-hidden whitespace-nowrap text-sm text-[var(--text-primary)] transition-[opacity,max-width] ${
-        collapsed ? "max-w-0 opacity-0 duration-150" : "max-w-[200px] opacity-100 duration-200 delay-[160ms]"
-      }`}>
-        {label}
-      </span>
-    </Link>
-  );
-}
-
-// ─── Shared helpers ───────────────────────────────────────────────────────────
-
-function formatDate(iso: string): string {
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return iso;
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 
-function FolderIcon() {
+function HomeIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z" />
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M12 3.172 2 11l1.414 1.414L4 11.828V20a1 1 0 0 0 1 1h4v-6h6v6h4a1 1 0 0 0 1-1v-8.172l.586.586L22 11 12 3.172z" />
     </svg>
   );
 }
 
 function PersonIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
       <circle cx="12" cy="8" r="4" />
       <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
     </svg>
   );
 }
 
+function FolderIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z" />
+    </svg>
+  );
+}
+
 function DocumentIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
       <polyline points="14 2 14 8 20 8" />
       <line x1="8" y1="13" x2="16" y2="13" />
@@ -228,6 +235,40 @@ function ResumeIcon() {
       <circle cx="7" cy="9" r="1" fill="currentColor" stroke="none" />
       <circle cx="7" cy="12" r="1" fill="currentColor" stroke="none" />
       <circle cx="7" cy="15" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+function SearchIcon() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor" className="text-[var(--text-dim)]" aria-hidden>
+      <path d="M7 2a5 5 0 1 1-3.2 8.8l-3 3-1.4-1.4 3-3A5 5 0 0 1 7 2zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6z" />
+    </svg>
+  );
+}
+
+function CollapseIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <rect x="2" y="2" width="16" height="16" rx="2.5" />
+      <line x1="7" y1="2" x2="7" y2="18" />
+    </svg>
+  );
+}
+
+function ChevronDownIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 16 16" aria-hidden>
+      <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+    </svg>
+  );
+}
+
+function PlusIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden>
+      <line x1="8" y1="3" x2="8" y2="13" />
+      <line x1="3" y1="8" x2="13" y2="8" />
     </svg>
   );
 }
