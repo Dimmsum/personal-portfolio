@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { getGitHubEvents } from "@/lib/content/github";
 import { posts } from "@/lib/content/posts";
@@ -37,7 +38,7 @@ function HeroSection() {
   const displayName = profile.displayName ?? profile.name;
   const githubHref = profile.contact.find((c) => c.label === "GitHub")?.href ?? "#";
   const linkedinHref = profile.contact.find((c) => c.label === "LinkedIn")?.href ?? "#";
-  const twitterHref = profile.twitterHref ?? "#";
+  const instagramHref = profile.instagramHref ?? "#";
 
   return (
     <section className="flex flex-col gap-6">
@@ -73,12 +74,12 @@ function HeroSection() {
         </a>
         <Divider />
         <a
-          href={twitterHref}
+          href={instagramHref}
           target="_blank"
           rel="noreferrer"
           className="flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
         >
-          <XIcon />
+          <InstagramIcon />
         </a>
         <Divider />
         <Link
@@ -114,9 +115,13 @@ function CompanyRow({ companies }: { companies: Company[] }) {
             rel="noreferrer"
             className="flex items-center gap-2 group"
           >
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--bg-highlight)] text-[10px] font-bold text-[var(--text-primary)] shadow-[0_1px_6px_rgba(0,0,0,0.4)] transition-shadow select-none">
-              {co.name.slice(0, 1).toUpperCase()}
-            </span>
+            {co.logo ? (
+              <Image src={co.logo} alt={co.name} width={36} height={36} style={{ height: 32, width: "auto" }} className="select-none" />
+            ) : (
+              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--bg-highlight)] text-[10px] font-bold text-[var(--text-primary)] shadow-[0_1px_6px_rgba(0,0,0,0.4)] select-none">
+                {co.name.slice(0, 1).toUpperCase()}
+              </span>
+            )}
             <span className="text-sm font-medium text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors">
               {co.name}
             </span>

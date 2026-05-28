@@ -10,17 +10,26 @@ export const profile: Profile = {
   contact: [
     { label: "Email", href: "mailto:dimetri.lee.2024@gmail.com" },
     { label: "GitHub", href: "https://github.com/Dimmsum" },
-    { label: "LinkedIn", href: "https://linkedin.com/in/dimetrilee" },
+    { label: "LinkedIn", href: "https://linkedin.com/in/dimetri-lee" },
   ],
-  twitterHref: "https://twitter.com/",
+  instagramHref: "https://instagram.com/dimetri.lee",
   now: [
     "Scaffolding this portfolio",
     "Reading: A Pattern Language",
     "Learning: WebGL fundamentals",
   ],
   companies: [
-    { name: "Current Co.", href: "#", current: true },
-    { name: "Past Co. A", href: "#", current: false },
-    { name: "Past Co. B", href: "#", current: false },
+    {
+      name: "Sagicor Innovation Lab",
+      href: "https://www.linkedin.com/company/utech-ja-innovation-lab/posts/?feedView=all",
+      logo: "/sagicor.png",
+      current: true,
+    },
+    {
+      name: "Intellibus",
+      href: "https://www.intellibus.com",
+      logo: "/intellibus.png",
+      current: true,
+    },
   ],
 };

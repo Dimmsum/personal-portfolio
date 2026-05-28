@@ -73,5 +73,5 @@ export type Profile = {
   contact: { label: string; href: string }[];
   now: string[];
   companies?: Company[];
-  twitterHref?: string;
+  instagramHref?: string;
 };
