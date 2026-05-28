@@ -114,7 +114,7 @@ function CompanyRow({ companies }: { companies: Company[] }) {
             rel="noreferrer"
             className="flex items-center gap-2 group"
           >
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--bg-highlight)] text-[10px] font-bold text-[var(--text-primary)] border border-[var(--border-subtle)] group-hover:border-[var(--accent)] transition-colors select-none">
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--bg-highlight)] text-[10px] font-bold text-[var(--text-primary)] shadow-[0_1px_6px_rgba(0,0,0,0.4)] transition-shadow select-none">
               {co.name.slice(0, 1).toUpperCase()}
             </span>
             <span className="text-sm font-medium text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors">
@@ -160,7 +160,7 @@ function FeaturedProjectCard({ project }: { project: Project }) {
   const bg = postPalette(project.slug);
   return (
     <Link href={`/projects/${project.slug}`}>
-      <article className="group flex flex-col overflow-hidden rounded-xl bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:border-[var(--accent)]/40 hover:shadow-lg transition-all duration-200">
+      <article className="group flex flex-col overflow-hidden rounded-xl bg-[var(--bg-card)] shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-card-hover)] transition-all duration-200">
         <div
           className="relative flex h-36 w-full items-end p-5"
           style={{ background: bg }}
@@ -241,13 +241,13 @@ function RecentCommitsCard({ events }: { events: GitHubEvent[] }) {
     { color: "#ef4444", pct: 7 },
   ];
   return (
-    <div className="flex flex-col rounded-xl bg-[var(--bg-card)] border border-[var(--border-subtle)] overflow-hidden">
+    <div className="flex flex-col rounded-xl bg-[var(--bg-card)] shadow-[var(--shadow-card)] overflow-hidden">
       <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-subtle)]">
         <div className="flex items-center gap-2">
           <CommitIcon />
           <span className="text-sm font-semibold text-[var(--text-primary)]">Recent Commits</span>
         </div>
-        <span className="text-[10px] font-mono text-[var(--text-dim)] border border-[var(--border-subtle)] rounded px-1.5 py-0.5">
+        <span className="text-[10px] font-mono text-[var(--text-dim)] bg-[var(--bg-highlight)] rounded px-1.5 py-0.5">
           info
         </span>
       </div>
@@ -312,7 +312,7 @@ function CommitRow({ event }: { event: GitHubEvent }) {
 
 function LatestPostsCard({ posts }: { posts: Post[] }) {
   return (
-    <div className="flex flex-col rounded-xl bg-[var(--bg-card)] border border-[var(--border-subtle)] overflow-hidden">
+    <div className="flex flex-col rounded-xl bg-[var(--bg-card)] shadow-[var(--shadow-card)] overflow-hidden">
       <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-subtle)]">
         <div className="flex items-center gap-2">
           <PostsIcon />
@@ -358,7 +358,7 @@ function PostRow({ post }: { post: Post }) {
 function LetsConnectSection() {
   const email = profile.contact.find((c) => c.label === "Email")?.href ?? "mailto:dimetri.lee.2024@gmail.com";
   return (
-    <section className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] overflow-hidden">
+    <section className="rounded-xl bg-[var(--bg-card)] shadow-[var(--shadow-card)] overflow-hidden">
       <div
         className="relative flex flex-col items-center gap-4 px-8 py-12 text-center"
         style={{

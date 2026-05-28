@@ -1,29 +1,33 @@
 @import "tailwindcss";
 
 :root {
-  --bg-base: #000000;
-  --bg-elevated: #121212;
-  --bg-highlight: #1a1a1a;
-  --bg-card: #181818;
-  --border-subtle: #2a2a2a;
-  --accent: #38bdf8;
-  --accent-hover: #0ea5e9;
-  --text-primary: #ffffff;
-  --text-muted: #a7a7a7;
-  --text-dim: #6a6a6a;
+  --bg-base: #050b18;
+  --bg-elevated: #091220;
+  --bg-highlight: #0f1e35;
+  --bg-card: #0c1830;
+  --border-subtle: #1a2d45;
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
+  --text-primary: #f0f4ff;
+  --text-muted: #8ea3bf;
+  --text-dim: #4d6480;
+  --shadow-card: 0 2px 20px rgba(0, 0, 0, 0.55);
+  --shadow-card-hover: 0 6px 32px rgba(0, 0, 0, 0.7);
 }
 
 html.theme-light {
-  --bg-base: #f4f4f4;
+  --bg-base: #f0f4fa;
   --bg-elevated: #ffffff;
-  --bg-highlight: #ececec;
-  --bg-card: #fafafa;
-  --border-subtle: #e2e2e2;
+  --bg-highlight: #e4ecf7;
+  --bg-card: #f8fafd;
+  --border-subtle: #d0dce8;
   --accent: #2563eb;
   --accent-hover: #1d4ed8;
-  --text-primary: #0a0a0a;
-  --text-muted: #5a5a5a;
-  --text-dim: #8a8a8a;
+  --text-primary: #0a1220;
+  --text-muted: #4a6080;
+  --text-dim: #8aa0b8;
+  --shadow-card: 0 2px 16px rgba(10, 30, 60, 0.1);
+  --shadow-card-hover: 0 6px 28px rgba(10, 30, 60, 0.18);
 }
 
 @theme inline {
