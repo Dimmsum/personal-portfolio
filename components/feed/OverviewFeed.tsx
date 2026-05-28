@@ -8,8 +8,28 @@ import type { GitHubEvent, Post, Project, Company } from "@/lib/content/types";
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
+const SPOTIFY_PLAYLIST_ID = "0tLjhJRpvDRdUYxTvBGOK7";
+const SPOTIFY_URL = `https://open.spotify.com/playlist/${SPOTIFY_PLAYLIST_ID}`;
+
+async function getSpotifyPlaylist(): Promise<{ title: string; thumbnail: string } | null> {
+  try {
+    const res = await fetch(
+      `https://open.spotify.com/oembed?url=${encodeURIComponent(SPOTIFY_URL)}`,
+      { next: { revalidate: 3600 } }
+    );
+    if (!res.ok) return null;
+    const data = await res.json() as { title?: string; thumbnail_url?: string };
+    return { title: data.title ?? "Playlist", thumbnail: data.thumbnail_url ?? "" };
+  } catch {
+    return null;
+  }
+}
+
 export async function OverviewFeed() {
-  const events = await getGitHubEvents(5);
+  const [events, spotifyPlaylist] = await Promise.all([
+    getGitHubEvents(5),
+    getSpotifyPlaylist(),
+  ]);
   const recentPosts = [...posts]
     .sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1))
     .slice(0, 4);
@@ -23,7 +43,7 @@ export async function OverviewFeed() {
       <div className="flex flex-col gap-12">
         <HeroSection />
         <FeaturedProjectsSection projects={fallbackProjects} />
-        <ActivityRow events={events} posts={recentPosts} />
+        <ActivityRow events={events} posts={recentPosts} spotify={spotifyPlaylist} />
         <LetsConnectSection />
       </div>
       <Footer />
@@ -253,14 +273,64 @@ function FeaturedProjectCard({ project }: { project: Project }) {
 function ActivityRow({
   events,
   posts,
+  spotify,
 }: {
   events: GitHubEvent[];
   posts: Post[];
+  spotify: { title: string; thumbnail: string } | null;
 }) {
   return (
-    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+    <div className="grid grid-cols-1 gap-5 sm:grid-cols-[2fr_1fr_1fr]">
       <RecentCommitsCard events={events} />
       <LatestPostsCard posts={posts} />
+      <SpotifyCard playlist={spotify} />
+    </div>
+  );
+}
+
+function SpotifyCard({ playlist }: { playlist: { title: string; thumbnail: string } | null }) {
+  return (
+    <div className="flex flex-col rounded-xl bg-[var(--bg-card)] shadow-[var(--shadow-card)] overflow-hidden">
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-subtle)]">
+        <div className="flex items-center gap-2">
+          <SpotifyIcon />
+          <span className="text-sm font-semibold text-[var(--text-primary)]">Favorite Playlist</span>
+        </div>
+      </div>
+
+      {/* Cover art */}
+      <div className="relative w-full aspect-square bg-[var(--bg-highlight)]">
+        {playlist?.thumbnail ? (
+          <Image
+            src={playlist.thumbnail}
+            alt={playlist.title}
+            fill
+            className="object-cover"
+            unoptimized
+          />
+        ) : (
+          <div className="flex h-full items-center justify-center">
+            <SpotifyIcon size={40} />
+          </div>
+        )}
+      </div>
+
+      {/* Name + link */}
+      <div className="flex flex-col gap-2 px-4 py-3 mt-auto">
+        <p className="truncate text-sm font-semibold text-[var(--text-primary)]">
+          {playlist?.title ?? "My Playlist"}
+        </p>
+        <a
+          href={SPOTIFY_URL}
+          target="_blank"
+          rel="noreferrer"
+          className="flex items-center gap-1.5 text-xs font-semibold text-[#1db954] hover:underline underline-offset-4 w-fit"
+        >
+          <SpotifyIcon size={12} />
+          Open in Spotify
+        </a>
+      </div>
     </div>
   );
 }
@@ -412,12 +482,9 @@ function LetsConnectSection() {
             "radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--accent) 8%, transparent) 0%, transparent 70%)",
         }}
       >
-        <h2 className="text-2xl font-bold tracking-tight">
-          Let&apos;s connect
-        </h2>
+        <h2 className="text-2xl font-bold tracking-tight">Let&apos;s connect</h2>
         <p className="text-sm text-[var(--text-muted)] max-w-sm leading-6">
-          Have a project in mind or just want to say hi? My inbox is always
-          open.
+          Have a project in mind or just want to say hi? My inbox is always open.
         </p>
         <a
           href={email}
@@ -639,6 +706,14 @@ function PostsIcon() {
     >
       <rect x="4" y="4" width="16" height="16" rx="2" />
       <path d="M8 8h8M8 12h8M8 16h5" />
+    </svg>
+  );
+}
+
+function SpotifyIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="#1db954" aria-hidden>
+      <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.516 17.313a.75.75 0 0 1-1.032.244c-2.827-1.728-6.387-2.12-10.578-1.162a.75.75 0 1 1-.334-1.463c4.587-1.047 8.52-.597 11.7 1.349a.75.75 0 0 1 .244 1.032zm1.472-3.27a.937.937 0 0 1-1.288.308c-3.234-1.988-8.164-2.563-11.99-1.403a.937.937 0 1 1-.544-1.793c4.375-1.328 9.813-.685 13.514 1.6a.938.938 0 0 1 .308 1.288zm.126-3.403C15.34 8.39 9.108 8.186 5.705 9.205a1.125 1.125 0 1 1-.652-2.154c3.93-1.19 10.465-.96 14.593 1.617a1.125 1.125 0 0 1-1.532 1.972z" />
     </svg>
   );
 }
