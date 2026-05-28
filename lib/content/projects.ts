@@ -6,6 +6,7 @@ export const projects: Project[] = [
     name: "Personal Portfolio",
     tagline: "This site — a Spotify-inspired portfolio.",
     status: "in-progress",
+    featured: true,
     tags: ["next.js", "tailwind", "design"],
     description:
       "A three-column, Spotify-inspired portfolio built with Next.js 16 and Tailwind v4. Projects on the left, content in the middle, about-me on the right. Sidebars collapse into rails.",
@@ -20,6 +21,7 @@ export const projects: Project[] = [
     name: "Heart of Love",
     tagline: "An interactive web experiment.",
     status: "in-progress",
+    featured: true,
     tags: ["webgl", "experiment"],
     description:
       "Exploring how interaction design can make a single web page feel like a place rather than a document.",

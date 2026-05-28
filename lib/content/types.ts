@@ -9,8 +9,16 @@ export type Project = {
   description: string;
   links?: { label: string; href: string }[];
   cover?: string;
+  featured?: boolean;
   startedAt: string;
   updatedAt: string;
+};
+
+export type Company = {
+  name: string;
+  href?: string;
+  logo?: string;
+  current?: boolean;
 };
 
 export type Post = {
@@ -57,10 +65,13 @@ export type ConsumingItem = {
 
 export type Profile = {
   name: string;
+  displayName?: string;
   role: string;
   bio: string;
   avatar: string;
   location?: string;
   contact: { label: string; href: string }[];
   now: string[];
+  companies?: Company[];
+  twitterHref?: string;
 };

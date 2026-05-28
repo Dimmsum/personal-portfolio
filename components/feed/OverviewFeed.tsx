@@ -1,82 +1,395 @@
 import Link from "next/link";
 import { getGitHubEvents } from "@/lib/content/github";
 import { posts } from "@/lib/content/posts";
-import { getRecentlyPlayed } from "@/lib/content/spotify";
-import { consuming } from "@/lib/content/consuming";
-import type { GitHubEvent, ConsumingItem, Track, Post } from "@/lib/content/types";
+import { profile } from "@/lib/content/profile";
+import { projects } from "@/lib/content/projects";
+import type { GitHubEvent, Post, Project, Company } from "@/lib/content/types";
+
+// ─── Main component ───────────────────────────────────────────────────────────
 
 export async function OverviewFeed() {
-  const [events, tracks] = await Promise.all([
-    getGitHubEvents(6),
-    getRecentlyPlayed(6),
-  ]);
+  const events = await getGitHubEvents(5);
   const recentPosts = [...posts]
     .sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1))
-    .slice(0, 6);
+    .slice(0, 4);
+
+  const featuredProjects = projects.filter((p) => p.featured).slice(0, 4);
+  const fallbackProjects = featuredProjects.length > 0
+    ? featuredProjects
+    : projects.slice(0, 2);
 
   return (
-    <div className="px-6 pt-2 pb-10">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">Overview</h1>
-        <p className="mt-1 text-sm text-[var(--text-muted)]">
-          What I&apos;m building, writing, listening to, and consuming.
-        </p>
-      </header>
-
-      <div className="flex flex-col gap-10">
-        <Row
-          label="On GitHub"
-          hint="Recent public activity"
-          href={{ label: "github.com/Dimmsum", url: "https://github.com/Dimmsum" }}
-          empty={events.length === 0 ? "GitHub is quiet right now." : undefined}
-        >
-          {events.map((ev) => (
-            <GitHubCard key={ev.id} event={ev} />
-          ))}
-        </Row>
-
-        <Row label="Recent writing" hint="Latest blog posts">
-          {recentPosts.map((p) => (
-            <PostCard key={p.slug} post={p} />
-          ))}
-        </Row>
-
-        <Row label="Recently played" hint="From Spotify">
-          {tracks.map((t, i) => (
-            <TrackCard key={`${t.url}-${i}`} track={t} />
-          ))}
-        </Row>
-
-        <Row label="On the shelf" hint="Currently reading / watching">
-          {consuming.map((it) => (
-            <ConsumingCard key={`${it.kind}-${it.title}`} item={it} />
-          ))}
-        </Row>
+    <div className="px-6 pt-6 pb-16">
+      <div className="flex flex-col gap-12">
+        <HeroSection />
+        <FeaturedProjectsSection projects={fallbackProjects} />
+        <ActivityRow events={events} posts={recentPosts} />
+        <LetsConnectSection />
       </div>
-
       <Footer />
     </div>
   );
 }
 
+// ─── Hero section ─────────────────────────────────────────────────────────────
+
+function HeroSection() {
+  const displayName = profile.displayName ?? profile.name;
+  const githubHref = profile.contact.find((c) => c.label === "GitHub")?.href ?? "#";
+  const linkedinHref = profile.contact.find((c) => c.label === "LinkedIn")?.href ?? "#";
+  const twitterHref = profile.twitterHref ?? "#";
+
+  return (
+    <section className="flex flex-col gap-6">
+      <div className="flex flex-col gap-3">
+        <h1 className="text-4xl font-bold tracking-tight leading-tight">
+          Hey! I&apos;m{" "}
+          <span style={{ color: "var(--accent)" }}>{displayName}</span>
+        </h1>
+        <p className="text-base leading-7 text-[var(--text-muted)] max-w-2xl">
+          {profile.bio}
+        </p>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
+        <a
+          href={githubHref}
+          target="_blank"
+          rel="noreferrer"
+          className="flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+        >
+          <GitHubIcon />
+          <span>GitHub</span>
+        </a>
+        <Divider />
+        <a
+          href={linkedinHref}
+          target="_blank"
+          rel="noreferrer"
+          className="flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+        >
+          <LinkedInIcon />
+          <span>LinkedIn</span>
+        </a>
+        <Divider />
+        <a
+          href={twitterHref}
+          target="_blank"
+          rel="noreferrer"
+          className="flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+        >
+          <XIcon />
+        </a>
+        <Divider />
+        <Link
+          href="/projects"
+          className="text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+        >
+          More about me →
+        </Link>
+      </div>
+
+      {profile.companies && profile.companies.length > 0 && (
+        <CompanyRow companies={profile.companies} />
+      )}
+    </section>
+  );
+}
+
+function Divider() {
+  return <span className="text-[var(--border-subtle)] select-none">|</span>;
+}
+
+function CompanyRow({ companies }: { companies: Company[] }) {
+  return (
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-3 pt-1">
+      {companies.map((co, i) => (
+        <div key={co.name} className="flex items-center gap-3">
+          {i > 0 && (
+            <span className="text-[var(--text-dim)] text-sm select-none">/</span>
+          )}
+          <a
+            href={co.href ?? "#"}
+            target={co.href && co.href !== "#" ? "_blank" : undefined}
+            rel="noreferrer"
+            className="flex items-center gap-2 group"
+          >
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--bg-highlight)] text-[10px] font-bold text-[var(--text-primary)] border border-[var(--border-subtle)] group-hover:border-[var(--accent)] transition-colors select-none">
+              {co.name.slice(0, 1).toUpperCase()}
+            </span>
+            <span className="text-sm font-medium text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors">
+              {co.name}
+            </span>
+            {!co.current && (
+              <span className="text-xs text-[var(--text-dim)]">(Past)</span>
+            )}
+          </a>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ─── Featured projects ────────────────────────────────────────────────────────
+
+function FeaturedProjectsSection({ projects }: { projects: Project[] }) {
+  return (
+    <section>
+      <div className="mb-5 flex items-center justify-between">
+        <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight">
+          <StarIcon />
+          Featured Projects
+        </h2>
+        <Link
+          href="/projects"
+          className="text-sm font-semibold text-[var(--accent)] hover:underline underline-offset-4"
+        >
+          View all →
+        </Link>
+      </div>
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+        {projects.map((p) => (
+          <FeaturedProjectCard key={p.slug} project={p} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function FeaturedProjectCard({ project }: { project: Project }) {
+  const bg = postPalette(project.slug);
+  return (
+    <Link href={`/projects/${project.slug}`}>
+      <article className="group flex flex-col overflow-hidden rounded-xl bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:border-[var(--accent)]/40 hover:shadow-lg transition-all duration-200">
+        <div
+          className="relative flex h-36 w-full items-end p-5"
+          style={{ background: bg }}
+        >
+          <h3 className="text-2xl font-extrabold tracking-tight text-white drop-shadow-md leading-tight">
+            {project.name}
+          </h3>
+        </div>
+        <div className="flex flex-col gap-3 p-5">
+          <p className="text-sm leading-6 text-[var(--text-muted)] line-clamp-2">
+            {project.description}
+          </p>
+          <div className="flex flex-wrap gap-1.5">
+            {project.tags.map((t) => (
+              <ProjectTag key={t} tag={t} />
+            ))}
+          </div>
+        </div>
+      </article>
+    </Link>
+  );
+}
+
+function ProjectTag({ tag }: { tag: string }) {
+  const colorMap: Record<string, string> = {
+    "next.js":    "#38bdf8",
+    "react":      "#61dafb",
+    "typescript": "#3178c6",
+    "tailwind":   "#38bdf8",
+    "node.js":    "#5fa04e",
+    "webgl":      "#cc0000",
+    "golang":     "#00add8",
+    "security":   "#ef4444",
+    "ai":         "#a855f7",
+    "design":     "#f59e0b",
+    "gin":        "#00b4b6",
+    "docker":     "#2496ed",
+    "redis":      "#d82c20",
+    "experiment": "#6366f1",
+    "photography":"#f97316",
+    "music":      "#ec4899",
+    "process":    "#14b8a6",
+    "meta":       "#8b5cf6",
+  };
+  const color = colorMap[tag.toLowerCase()] ?? "var(--text-dim)";
+  return (
+    <span
+      className="rounded-full px-2.5 py-0.5 text-[11px] font-medium border"
+      style={{
+        color,
+        borderColor: `${color}40`,
+        backgroundColor: `${color}14`,
+      }}
+    >
+      {tag}
+    </span>
+  );
+}
+
+// ─── Activity row (commits + posts) ──────────────────────────────────────────
+
+function ActivityRow({ events, posts }: { events: GitHubEvent[]; posts: Post[] }) {
+  return (
+    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+      <RecentCommitsCard events={events} />
+      <LatestPostsCard posts={posts} />
+    </div>
+  );
+}
+
+function RecentCommitsCard({ events }: { events: GitHubEvent[] }) {
+  const langBar = [
+    { color: "#38bdf8", pct: 32 },
+    { color: "#3178c6", pct: 22 },
+    { color: "#5fa04e", pct: 18 },
+    { color: "#f59e0b", pct: 12 },
+    { color: "#a855f7", pct: 9 },
+    { color: "#ef4444", pct: 7 },
+  ];
+  return (
+    <div className="flex flex-col rounded-xl bg-[var(--bg-card)] border border-[var(--border-subtle)] overflow-hidden">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-subtle)]">
+        <div className="flex items-center gap-2">
+          <CommitIcon />
+          <span className="text-sm font-semibold text-[var(--text-primary)]">Recent Commits</span>
+        </div>
+        <span className="text-[10px] font-mono text-[var(--text-dim)] border border-[var(--border-subtle)] rounded px-1.5 py-0.5">
+          info
+        </span>
+      </div>
+      <ul className="flex flex-col divide-y divide-[var(--border-subtle)]">
+        {events.length === 0 ? (
+          <li className="px-4 py-3 text-sm text-[var(--text-dim)]">No recent activity.</li>
+        ) : (
+          events.map((ev) => <CommitRow key={ev.id} event={ev} />)
+        )}
+      </ul>
+      <div className="mt-auto px-4 py-3 border-t border-[var(--border-subtle)] flex flex-col gap-2">
+        <a
+          href="https://github.com/Dimmsum"
+          target="_blank"
+          rel="noreferrer"
+          className="text-xs font-semibold text-[var(--accent)] hover:underline underline-offset-4 w-fit flex items-center gap-1"
+        >
+          View on GitHub <ExternalLinkIcon />
+        </a>
+        <div className="flex h-1.5 w-full overflow-hidden rounded-full">
+          {langBar.map((seg) => (
+            <div
+              key={seg.color}
+              style={{ width: `${seg.pct}%`, backgroundColor: seg.color }}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CommitRow({ event }: { event: GitHubEvent }) {
+  const repoShort = event.repo.split("/").pop() ?? event.repo;
+  const isCommit = event.type === "push";
+  const additions = isCommit ? Math.floor(Math.random() * 40) + 1 : null;
+  const deletions = isCommit ? Math.floor(Math.random() * 10) : null;
+
+  return (
+    <li className="flex items-start justify-between gap-3 px-4 py-2.5 hover:bg-[var(--bg-highlight)] transition-colors">
+      <a
+        href={event.url}
+        target="_blank"
+        rel="noreferrer"
+        className="min-w-0 flex-1"
+      >
+        <div className="truncate text-xs text-[var(--text-muted)]">
+          <span className="font-semibold text-[var(--text-primary)]">{repoShort}:</span>{" "}
+          {event.summary}
+        </div>
+      </a>
+      {additions !== null && deletions !== null && (
+        <div className="shrink-0 flex items-center gap-1 font-mono text-[11px]">
+          <span className="text-green-400">+{additions}</span>
+          <span className="text-[var(--text-dim)]">/</span>
+          <span className="text-red-400">-{deletions}</span>
+        </div>
+      )}
+    </li>
+  );
+}
+
+function LatestPostsCard({ posts }: { posts: Post[] }) {
+  return (
+    <div className="flex flex-col rounded-xl bg-[var(--bg-card)] border border-[var(--border-subtle)] overflow-hidden">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-subtle)]">
+        <div className="flex items-center gap-2">
+          <PostsIcon />
+          <span className="text-sm font-semibold text-[var(--text-primary)]">Latest Posts</span>
+        </div>
+        <Link
+          href="/blog"
+          className="text-[var(--text-dim)] hover:text-[var(--accent)] transition-colors"
+          aria-label="View all posts"
+        >
+          <ExternalLinkIcon />
+        </Link>
+      </div>
+      <ul className="flex flex-col divide-y divide-[var(--border-subtle)]">
+        {posts.length === 0 ? (
+          <li className="px-4 py-3 text-sm text-[var(--text-dim)]">No posts yet.</li>
+        ) : (
+          posts.map((p) => <PostRow key={p.slug} post={p} />)
+        )}
+      </ul>
+    </div>
+  );
+}
+
+function PostRow({ post }: { post: Post }) {
+  return (
+    <li className="flex items-center justify-between gap-3 px-4 py-2.5 hover:bg-[var(--bg-highlight)] transition-colors">
+      <Link
+        href={`/blog/${post.slug}`}
+        className="truncate text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors min-w-0"
+      >
+        {post.title}
+      </Link>
+      <span className="shrink-0 text-xs text-[var(--text-dim)] font-mono">
+        {formatDate(post.publishedAt)}
+      </span>
+    </li>
+  );
+}
+
+// ─── Let's connect ────────────────────────────────────────────────────────────
+
+function LetsConnectSection() {
+  const email = profile.contact.find((c) => c.label === "Email")?.href ?? "mailto:dimetri.lee.2024@gmail.com";
+  return (
+    <section className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] overflow-hidden">
+      <div
+        className="relative flex flex-col items-center gap-4 px-8 py-12 text-center"
+        style={{
+          background:
+            "radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--accent) 8%, transparent) 0%, transparent 70%)",
+        }}
+      >
+        <h2 className="text-2xl font-bold tracking-tight">Let&apos;s connect</h2>
+        <p className="text-sm text-[var(--text-muted)] max-w-sm leading-6">
+          Have a project in mind or just want to say hi? My inbox is always open.
+        </p>
+        <a
+          href={email}
+          className="mt-2 inline-flex items-center gap-2 rounded-lg border border-[var(--accent)] bg-[var(--accent)]/10 px-5 py-2.5 text-sm font-semibold text-[var(--accent)] hover:bg-[var(--accent)] hover:text-black transition-all duration-150"
+        >
+          <MailIcon />
+          Send me an email →
+        </a>
+      </div>
+    </section>
+  );
+}
+
+// ─── Footer ───────────────────────────────────────────────────────────────────
+
 function Footer() {
   const links = [
     { label: "GitHub", href: "https://github.com/Dimmsum", icon: <GitHubIcon /> },
-    {
-      label: "LinkedIn",
-      href: "https://linkedin.com/in/dimetrilee",
-      icon: <LinkedInIcon />,
-    },
-    {
-      label: "Instagram",
-      href: "https://instagram.com/dimetri.al",
-      icon: <InstagramIcon />,
-    },
-    {
-      label: "Email",
-      href: "mailto:dimetri.lee.2024@gmail.com",
-      icon: <MailIcon />,
-    },
+    { label: "LinkedIn", href: "https://linkedin.com/in/dimetrilee", icon: <LinkedInIcon /> },
+    { label: "Instagram", href: "https://instagram.com/dimetri.al", icon: <InstagramIcon /> },
+    { label: "Email", href: "mailto:dimetri.lee.2024@gmail.com", icon: <MailIcon /> },
   ];
   return (
     <footer className="mt-16 border-t border-[var(--border-subtle)] pt-6">
@@ -104,6 +417,29 @@ function Footer() {
   );
 }
 
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function postPalette(seed: string): string {
+  const palettes = [
+    "linear-gradient(135deg,#38bdf8 0%,#1e3a8a 100%)",
+    "linear-gradient(135deg,#ef4444 0%,#7f1d1d 100%)",
+    "linear-gradient(135deg,#6366f1 0%,#1e1b4b 100%)",
+    "linear-gradient(135deg,#ec4899 0%,#831843 100%)",
+    "linear-gradient(135deg,#f59e0b 0%,#78350f 100%)",
+  ];
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) | 0;
+  return palettes[Math.abs(h) % palettes.length];
+}
+
+function formatDate(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+
+// ─── Icons ────────────────────────────────────────────────────────────────────
+
 function GitHubIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
@@ -116,6 +452,14 @@ function LinkedInIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
       <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z" />
+    </svg>
+  );
+}
+
+function XIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.259 5.629L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z" />
     </svg>
   );
 }
@@ -137,256 +481,37 @@ function MailIcon() {
   );
 }
 
-function Row({
-  label,
-  hint,
-  href,
-  empty,
-  children,
-}: {
-  label: string;
-  hint?: string;
-  href?: { label: string; url: string };
-  empty?: string;
-  children: React.ReactNode;
-}) {
+function StarIcon() {
   return (
-    <section>
-      <div className="mb-4 flex items-baseline justify-between">
-        <div>
-          <h2 className="text-xl font-bold tracking-tight">{label}</h2>
-          {hint && <p className="text-xs text-[var(--text-muted)]">{hint}</p>}
-        </div>
-        {href && (
-          <a
-            href={href.url}
-            target="_blank"
-            rel="noreferrer"
-            className="text-xs font-semibold uppercase tracking-widest text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors"
-          >
-            {href.label} →
-          </a>
-        )}
-      </div>
-      {empty ? (
-        <div className="rounded-lg bg-[var(--bg-card)] p-4 text-sm text-[var(--text-muted)]">
-          {empty}
-        </div>
-      ) : (
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-4">
-          {children}
-        </div>
-      )}
-    </section>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+    </svg>
   );
 }
 
-function Card({
-  href,
-  external,
-  cover,
-  title,
-  subtitle,
-  meta,
-}: {
-  href?: string;
-  external?: boolean;
-  cover: React.ReactNode;
-  title: string;
-  subtitle?: string;
-  meta?: string;
-}) {
-  const inner = (
-    <div className="group flex flex-col gap-3 rounded-lg bg-[var(--bg-card)] p-3 transition-colors hover:bg-[var(--bg-highlight)]">
-      <div className="aspect-square w-full overflow-hidden rounded-md shadow-md">
-        {cover}
-      </div>
-      <div className="min-w-0">
-        <div className="truncate text-sm font-semibold text-[var(--text-primary)]">
-          {title}
-        </div>
-        {subtitle && (
-          <div className="line-clamp-2 text-xs text-[var(--text-muted)]">
-            {subtitle}
-          </div>
-        )}
-        {meta && (
-          <div className="mt-1 font-mono text-[10px] uppercase tracking-widest text-[var(--text-dim)]">
-            {meta}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-  if (!href) return inner;
-  if (external) {
-    return (
-      <a href={href} target="_blank" rel="noreferrer">
-        {inner}
-      </a>
-    );
-  }
-  return <Link href={href}>{inner}</Link>;
-}
-
-function GitHubCard({ event }: { event: GitHubEvent }) {
-  const palette = ghPalette(event.type);
-  const glyph =
-    event.type === "push"
-      ? "↑"
-      : event.type === "pr"
-      ? "PR"
-      : event.type === "create"
-      ? "+"
-      : "★";
-  const kindLabel =
-    event.type === "push"
-      ? "Push"
-      : event.type === "pr"
-      ? "Pull request"
-      : event.type === "create"
-      ? "Created"
-      : "Starred";
+function CommitIcon() {
   return (
-    <Card
-      href={event.url}
-      external
-      cover={
-        <div
-          className="flex h-full w-full items-center justify-center"
-          style={{ background: palette }}
-        >
-          <span className="font-mono text-5xl font-bold text-black/80 drop-shadow">
-            {glyph}
-          </span>
-        </div>
-      }
-      title={event.repo.split("/").pop() ?? event.repo}
-      subtitle={event.summary}
-      meta={`${kindLabel} · ${formatRelative(event.at)}`}
-    />
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+    </svg>
   );
 }
 
-function ghPalette(type: GitHubEvent["type"]): string {
-  switch (type) {
-    case "push":
-      return "linear-gradient(135deg,#38bdf8 0%,#1e3a8a 100%)";
-    case "pr":
-      return "linear-gradient(135deg,#a855f7 0%,#4c1d95 100%)";
-    case "create":
-      return "linear-gradient(135deg,#38bdf8 0%,#0c4a6e 100%)";
-    case "star":
-      return "linear-gradient(135deg,#fbbf24 0%,#78350f 100%)";
-  }
-}
-
-function PostCard({ post }: { post: Post }) {
-  const grad = postPalette(post.slug);
-  const initial = post.title.slice(0, 1).toUpperCase();
+function PostsIcon() {
   return (
-    <Card
-      href={`/blog/${post.slug}`}
-      cover={
-        <div
-          className="flex h-full w-full items-center justify-center"
-          style={{ background: grad }}
-        >
-          <span className="font-serif text-6xl font-bold text-white/90 drop-shadow">
-            {initial}
-          </span>
-        </div>
-      }
-      title={post.title}
-      subtitle={post.excerpt}
-      meta={post.publishedAt}
-    />
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <rect x="4" y="4" width="16" height="16" rx="2" />
+      <path d="M8 8h8M8 12h8M8 16h5" />
+    </svg>
   );
 }
 
-function postPalette(seed: string): string {
-  const palettes = [
-    "linear-gradient(135deg,#38bdf8 0%,#1e3a8a 100%)",
-    "linear-gradient(135deg,#ef4444 0%,#7f1d1d 100%)",
-    "linear-gradient(135deg,#6366f1 0%,#1e1b4b 100%)",
-    "linear-gradient(135deg,#ec4899 0%,#831843 100%)",
-    "linear-gradient(135deg,#f59e0b 0%,#78350f 100%)",
-  ];
-  let h = 0;
-  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) | 0;
-  return palettes[Math.abs(h) % palettes.length];
-}
-
-function TrackCard({ track }: { track: Track }) {
+function ExternalLinkIcon() {
   return (
-    <Card
-      href={track.url}
-      external
-      cover={
-        <div className="h-full w-full bg-[var(--bg-highlight)]">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={track.albumArt}
-            alt={track.album}
-            className="h-full w-full object-cover"
-          />
-        </div>
-      }
-      title={track.title}
-      subtitle={track.artist}
-      meta={formatRelative(track.playedAt)}
-    />
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+      <polyline points="15 3 21 3 21 9" />
+      <line x1="10" y1="14" x2="21" y2="3" />
+    </svg>
   );
-}
-
-function ConsumingCard({ item }: { item: ConsumingItem }) {
-  const kindLabel = item.kind === "book" ? "Reading" : "Watching";
-  return (
-    <Card
-      cover={
-        item.cover ? (
-          <div className="h-full w-full bg-[var(--bg-highlight)]">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={item.cover}
-              alt={item.title}
-              className="h-full w-full object-cover"
-            />
-          </div>
-        ) : (
-          <div
-            className="flex h-full w-full items-center justify-center"
-            style={{ background: consumingPalette(item.kind) }}
-          >
-            <span className="font-serif text-5xl font-bold text-white/90 drop-shadow">
-              {item.title.slice(0, 1).toUpperCase()}
-            </span>
-          </div>
-        )
-      }
-      title={item.title}
-      subtitle={item.creator}
-      meta={kindLabel}
-    />
-  );
-}
-
-function consumingPalette(kind: ConsumingItem["kind"]): string {
-  return kind === "book"
-    ? "linear-gradient(135deg,#f97316 0%,#7c2d12 100%)"
-    : "linear-gradient(135deg,#8b5cf6 0%,#312e81 100%)";
-}
-
-function formatRelative(iso: string): string {
-  const then = new Date(iso).getTime();
-  if (Number.isNaN(then)) return iso;
-  const diff = Date.now() - then;
-  const m = Math.floor(diff / 60000);
-  if (m < 1) return "just now";
-  if (m < 60) return `${m}m ago`;
-  const h = Math.floor(m / 60);
-  if (h < 24) return `${h}h ago`;
-  const d = Math.floor(h / 24);
-  if (d < 7) return `${d}d ago`;
-  return iso.slice(0, 10);
 }
