@@ -3,8 +3,8 @@ import type { Profile } from "./types";
 export const profile: Profile = {
   name: "dim",
   displayName: "Dimetri Lee",
-  role: "Software engineer & designer",
-  bio: "I build interfaces and tools that sit at the intersection of design and engineering. I care deeply about the craft — the details that make software feel considered rather than assembled. Currently building products that help people express and share their ideas.",
+  role: "Software Engineer",
+  bio: "I have worked on APIs, Full-Stack Applications, Bots & other tools which are used to solve real-world problems and improve effeciency. Though everything is now about shipping fast and utilizing AI to be effecient, I do not neglect learning tools, fundamentals and best practices. Currently working on a university student exclusive platform to buy, sell & earn money through tasks.",
   avatar: "/avatar.svg",
   location: "Earth",
   contact: [

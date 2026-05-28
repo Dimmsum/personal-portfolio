@@ -43,57 +43,83 @@ function HeroSection() {
 
   return (
     <section className="flex flex-col gap-6">
-      <div className="flex flex-col gap-3">
-        <h1 className="text-4xl font-bold tracking-tight leading-tight">
-          Hey! I&apos;m{" "}
-          <span style={{ color: "var(--accent)" }}>{displayName}</span>
-        </h1>
-        <p className="text-base leading-7 text-[var(--text-muted)] max-w-2xl">
-          {profile.bio}
-        </p>
-      </div>
+      <div className="grid items-stretch gap-8" style={{ gridTemplateColumns: "3fr 2fr" }}>
 
-      <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
-        <a
-          href={githubHref}
-          target="_blank"
-          rel="noreferrer"
-          className="flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
-        >
-          <GitHubIcon />
-          <span>GitHub</span>
-        </a>
-        <Divider />
-        <a
-          href={linkedinHref}
-          target="_blank"
-          rel="noreferrer"
-          className="flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
-        >
-          <LinkedInIcon />
-          <span>LinkedIn</span>
-        </a>
-        <Divider />
-        <a
-          href={instagramHref}
-          target="_blank"
-          rel="noreferrer"
-          className="flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
-        >
-          <InstagramIcon />
-        </a>
-        <Divider />
-        <Link
-          href="/about"
-          className="text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
-        >
-          More about me →
-        </Link>
-      </div>
+        {/* ── Left column ── */}
+        <div className="flex flex-col gap-4 min-w-0">
+          <div className="flex flex-col gap-2">
+            <h1 className="text-4xl font-bold tracking-tight leading-tight">
+              Hey! I&apos;m{" "}
+              <span style={{ color: "var(--accent)" }}>{displayName}</span>
+            </h1>
+            <p className="text-sm font-medium tracking-wide">
+              <span style={{ color: "#ffffff" }}>API Team Lead @ Sagicor Innovation Lab</span>
+              {" "}
+              <span style={{ color: "#ffffff" }}>|</span>
+              {" "}
+              <span style={{ color: "#ffffff" }}>Intern @ Intellibus</span>
+            </p>
+          </div>
+          <p className="text-base leading-7 text-[var(--text-muted)] text-justify">
+            {highlightBio(profile.bio, ["API Team Lead @ Sagicor Innovation Lab", "Intern @ Intellibus", "|"])}
+          </p>
 
-      {profile.companies && profile.companies.length > 0 && (
-        <CompanyRow companies={profile.companies} />
-      )}
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
+            <a
+              href={githubHref}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+            >
+              <GitHubIcon />
+              <span>GitHub</span>
+            </a>
+            <Divider />
+            <a
+              href={linkedinHref}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+            >
+              <LinkedInIcon />
+              <span>LinkedIn</span>
+            </a>
+            <Divider />
+            <a
+              href={instagramHref}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+            >
+              <InstagramIcon />
+            </a>
+            <Divider />
+            <Link
+              href="/about"
+              className="text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+            >
+              More about me →
+            </Link>
+          </div>
+
+          {profile.companies && profile.companies.length > 0 && (
+            <CompanyRow companies={profile.companies} />
+          )}
+        </div>
+
+        {/* ── Right column: photo ── */}
+        <div className="hidden sm:block p-2">
+          <div className="relative h-full w-full overflow-hidden rounded-2xl">
+            <Image
+              src="/picture-1.JPEG"
+              alt="Dimetri Lee"
+              fill
+              className="object-cover object-top scale-x-[-1]"
+            />
+          </div>
+        </div>
+
+      </div>
     </section>
   );
 }
@@ -172,18 +198,54 @@ function FeaturedProjectsSection({ projects }: { projects: Project[] }) {
 }
 
 function FeaturedProjectCard({ project }: { project: Project }) {
-  const bg = postPalette(project.slug);
+  const slug = project.slug.replace(/-/g, "_");
   return (
     <Link href={`/projects/${project.slug}`}>
       <article className="group flex flex-col overflow-hidden rounded-xl bg-[var(--bg-card)] shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-card-hover)] transition-all duration-200">
-        <div
-          className="relative flex h-36 w-full items-end p-5"
-          style={{ background: bg }}
-        >
-          <h3 className="text-2xl font-extrabold tracking-tight text-white drop-shadow-md leading-tight">
-            {project.name}
-          </h3>
+
+        {/* ── Terminal window ── */}
+        <div className="rounded-t-xl overflow-hidden" style={{ background: "#1c1c1e" }}>
+          {/* Title bar */}
+          <div className="flex items-center gap-0 px-4 py-3" style={{ background: "#2c2c2e" }}>
+            <div className="flex items-center gap-1.5">
+              <span className="h-3 w-3 rounded-full" style={{ background: "#ff5f57" }} />
+              <span className="h-3 w-3 rounded-full" style={{ background: "#febc2e" }} />
+              <span className="h-3 w-3 rounded-full" style={{ background: "#28c840" }} />
+            </div>
+            <span className="flex-1 text-center text-xs font-medium" style={{ color: "#8e8e93", fontFamily: "ui-monospace, monospace" }}>
+              {slug}.sh
+            </span>
+          </div>
+
+          {/* Terminal body */}
+          <div className="px-4 py-4 font-mono text-xs leading-6 select-none" style={{ fontFamily: "ui-monospace, 'Cascadia Code', 'Fira Code', monospace", minHeight: "9rem" }}>
+            <p>
+              <span style={{ color: "#28c840" }}>➜</span>
+              <span style={{ color: "#58a6ff" }}> ~/projects</span>
+              <span style={{ color: "#e6edf3" }}> cat README.md</span>
+            </p>
+            <p style={{ color: "#e6edf3" }} className="mt-1">
+              <span style={{ color: "#febc2e" }}># </span>{project.name}
+            </p>
+            <p style={{ color: "#8e8e93" }}>{project.tagline}</p>
+            <p className="mt-2">
+              <span style={{ color: "#8e8e93" }}>status  </span>
+              <span style={{ color: project.status === "in-progress" ? "#28c840" : project.status === "completed" ? "#58a6ff" : "#8e8e93" }}>
+                {project.status}
+              </span>
+            </p>
+            <p>
+              <span style={{ color: "#8e8e93" }}>tags    </span>
+              <span style={{ color: "#e6edf3" }}>{project.tags.join(", ")}</span>
+            </p>
+            <p className="mt-2">
+              <span style={{ color: "#28c840" }}>➜</span>
+              <span style={{ color: "#58a6ff" }}> ~/projects</span>
+              <span className="inline-block w-2 h-4 ml-1 align-middle animate-pulse" style={{ background: "#e6edf3", opacity: 0.8 }} />
+            </p>
+          </div>
         </div>
+
         <div className="flex flex-col gap-3 p-5">
           <p className="text-sm leading-6 text-[var(--text-muted)] line-clamp-2">
             {project.description}
@@ -471,17 +533,21 @@ function Footer() {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-function postPalette(seed: string): string {
-  const palettes = [
-    "linear-gradient(135deg,#38bdf8 0%,#1e3a8a 100%)",
-    "linear-gradient(135deg,#ef4444 0%,#7f1d1d 100%)",
-    "linear-gradient(135deg,#6366f1 0%,#1e1b4b 100%)",
-    "linear-gradient(135deg,#ec4899 0%,#831843 100%)",
-    "linear-gradient(135deg,#f59e0b 0%,#78350f 100%)",
-  ];
-  let h = 0;
-  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) | 0;
-  return palettes[Math.abs(h) % palettes.length];
+function highlightBio(text: string, phrases: string[]): React.ReactNode {
+  const pattern = new RegExp(`(${phrases.map((p) => p.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})`, "g");
+  const parts = text.split(pattern);
+  const set = new Set(phrases);
+  return parts.map((part, i) => {
+    if (!set.has(part)) return part;
+    if (part === "|") return (
+      <span key={i} style={{ color: "#ffffff" }}>{part}</span>
+    );
+    return (
+      <span key={i} className="font-bold" style={{ color: "var(--accent)" }}>
+        {part}
+      </span>
+    );
+  });
 }
 
 function formatDate(iso: string): string {
