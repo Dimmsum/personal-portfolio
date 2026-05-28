@@ -4,7 +4,7 @@ export const profile: Profile = {
   name: "dim",
   displayName: "Dimetri Lee",
   role: "Software Engineer",
-  bio: "I have worked on APIs, Full-Stack Applications, Bots & other tools which are used to solve real-world problems and improve effeciency. Though everything is now about shipping fast and utilizing AI to be effecient, I do not neglect learning tools, fundamentals and best practices. Currently working on a university student exclusive platform to buy, sell & earn money through tasks.",
+  bio: "I have worked on APIs, Full-Stack Applications, Bots & other tools which are used to solve real-world problems and improve effeciency. Though everything is now about shipping fast and utilizing AI to be effecient, I do not neglect learning tools, fundamentals and best practices. Currently working on a university student exclusive platform to buy, sell & earn money through products & services.",
   avatar: "/avatar.svg",
   location: "Earth",
   contact: [
