@@ -15,9 +15,8 @@ export async function OverviewFeed() {
     .slice(0, 4);
 
   const featuredProjects = projects.filter((p) => p.featured).slice(0, 4);
-  const fallbackProjects = featuredProjects.length > 0
-    ? featuredProjects
-    : projects.slice(0, 2);
+  const fallbackProjects =
+    featuredProjects.length > 0 ? featuredProjects : projects.slice(0, 2);
 
   return (
     <div className="px-6 pt-6 pb-16">
@@ -36,8 +35,10 @@ export async function OverviewFeed() {
 
 function HeroSection() {
   const displayName = profile.displayName ?? profile.name;
-  const githubHref = profile.contact.find((c) => c.label === "GitHub")?.href ?? "#";
-  const linkedinHref = profile.contact.find((c) => c.label === "LinkedIn")?.href ?? "#";
+  const githubHref =
+    profile.contact.find((c) => c.label === "GitHub")?.href ?? "#";
+  const linkedinHref =
+    profile.contact.find((c) => c.label === "LinkedIn")?.href ?? "#";
   const instagramHref = profile.instagramHref ?? "#";
 
   return (
@@ -83,7 +84,7 @@ function HeroSection() {
         </a>
         <Divider />
         <Link
-          href="/projects"
+          href="/about"
           className="text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
         >
           More about me →
@@ -107,7 +108,9 @@ function CompanyRow({ companies }: { companies: Company[] }) {
       {companies.map((co, i) => (
         <div key={co.name} className="flex items-center gap-3">
           {i > 0 && (
-            <span className="text-[var(--text-dim)] text-sm select-none">/</span>
+            <span className="text-[var(--text-dim)] text-sm select-none">
+              /
+            </span>
           )}
           <a
             href={co.href ?? "#"}
@@ -116,7 +119,14 @@ function CompanyRow({ companies }: { companies: Company[] }) {
             className="flex items-center gap-2 group"
           >
             {co.logo ? (
-              <Image src={co.logo} alt={co.name} width={36} height={36} style={{ height: 32, width: "auto" }} className="select-none" />
+              <Image
+                src={co.logo}
+                alt={co.name}
+                width={36}
+                height={36}
+                style={{ height: 32, width: "auto" }}
+                className="select-none"
+              />
             ) : (
               <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--bg-highlight)] text-[10px] font-bold text-[var(--text-primary)] shadow-[0_1px_6px_rgba(0,0,0,0.4)] select-none">
                 {co.name.slice(0, 1).toUpperCase()}
@@ -191,24 +201,24 @@ function FeaturedProjectCard({ project }: { project: Project }) {
 
 function ProjectTag({ tag }: { tag: string }) {
   const colorMap: Record<string, string> = {
-    "next.js":    "#38bdf8",
-    "react":      "#61dafb",
-    "typescript": "#3178c6",
-    "tailwind":   "#38bdf8",
-    "node.js":    "#5fa04e",
-    "webgl":      "#cc0000",
-    "golang":     "#00add8",
-    "security":   "#ef4444",
-    "ai":         "#a855f7",
-    "design":     "#f59e0b",
-    "gin":        "#00b4b6",
-    "docker":     "#2496ed",
-    "redis":      "#d82c20",
-    "experiment": "#6366f1",
-    "photography":"#f97316",
-    "music":      "#ec4899",
-    "process":    "#14b8a6",
-    "meta":       "#8b5cf6",
+    "next.js": "#38bdf8",
+    react: "#61dafb",
+    typescript: "#3178c6",
+    tailwind: "#38bdf8",
+    "node.js": "#5fa04e",
+    webgl: "#cc0000",
+    golang: "#00add8",
+    security: "#ef4444",
+    ai: "#a855f7",
+    design: "#f59e0b",
+    gin: "#00b4b6",
+    docker: "#2496ed",
+    redis: "#d82c20",
+    experiment: "#6366f1",
+    photography: "#f97316",
+    music: "#ec4899",
+    process: "#14b8a6",
+    meta: "#8b5cf6",
   };
   const color = colorMap[tag.toLowerCase()] ?? "var(--text-dim)";
   return (
@@ -227,7 +237,13 @@ function ProjectTag({ tag }: { tag: string }) {
 
 // ─── Activity row (commits + posts) ──────────────────────────────────────────
 
-function ActivityRow({ events, posts }: { events: GitHubEvent[]; posts: Post[] }) {
+function ActivityRow({
+  events,
+  posts,
+}: {
+  events: GitHubEvent[];
+  posts: Post[];
+}) {
   return (
     <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
       <RecentCommitsCard events={events} />
@@ -250,7 +266,9 @@ function RecentCommitsCard({ events }: { events: GitHubEvent[] }) {
       <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-subtle)]">
         <div className="flex items-center gap-2">
           <CommitIcon />
-          <span className="text-sm font-semibold text-[var(--text-primary)]">Recent Commits</span>
+          <span className="text-sm font-semibold text-[var(--text-primary)]">
+            Recent Commits
+          </span>
         </div>
         <span className="text-[10px] font-mono text-[var(--text-dim)] bg-[var(--bg-highlight)] rounded px-1.5 py-0.5">
           info
@@ -258,7 +276,9 @@ function RecentCommitsCard({ events }: { events: GitHubEvent[] }) {
       </div>
       <ul className="flex flex-col divide-y divide-[var(--border-subtle)]">
         {events.length === 0 ? (
-          <li className="px-4 py-3 text-sm text-[var(--text-dim)]">No recent activity.</li>
+          <li className="px-4 py-3 text-sm text-[var(--text-dim)]">
+            No recent activity.
+          </li>
         ) : (
           events.map((ev) => <CommitRow key={ev.id} event={ev} />)
         )}
@@ -300,7 +320,9 @@ function CommitRow({ event }: { event: GitHubEvent }) {
         className="min-w-0 flex-1"
       >
         <div className="truncate text-xs text-[var(--text-muted)]">
-          <span className="font-semibold text-[var(--text-primary)]">{repoShort}:</span>{" "}
+          <span className="font-semibold text-[var(--text-primary)]">
+            {repoShort}:
+          </span>{" "}
           {event.summary}
         </div>
       </a>
@@ -321,7 +343,9 @@ function LatestPostsCard({ posts }: { posts: Post[] }) {
       <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-subtle)]">
         <div className="flex items-center gap-2">
           <PostsIcon />
-          <span className="text-sm font-semibold text-[var(--text-primary)]">Latest Posts</span>
+          <span className="text-sm font-semibold text-[var(--text-primary)]">
+            Latest Posts
+          </span>
         </div>
         <Link
           href="/blog"
@@ -333,7 +357,9 @@ function LatestPostsCard({ posts }: { posts: Post[] }) {
       </div>
       <ul className="flex flex-col divide-y divide-[var(--border-subtle)]">
         {posts.length === 0 ? (
-          <li className="px-4 py-3 text-sm text-[var(--text-dim)]">No posts yet.</li>
+          <li className="px-4 py-3 text-sm text-[var(--text-dim)]">
+            No posts yet.
+          </li>
         ) : (
           posts.map((p) => <PostRow key={p.slug} post={p} />)
         )}
@@ -361,7 +387,9 @@ function PostRow({ post }: { post: Post }) {
 // ─── Let's connect ────────────────────────────────────────────────────────────
 
 function LetsConnectSection() {
-  const email = profile.contact.find((c) => c.label === "Email")?.href ?? "mailto:dimetri.lee.2024@gmail.com";
+  const email =
+    profile.contact.find((c) => c.label === "Email")?.href ??
+    "mailto:dimetri.lee.2024@gmail.com";
   return (
     <section className="rounded-xl bg-[var(--bg-card)] shadow-[var(--shadow-card)] overflow-hidden">
       <div
@@ -371,9 +399,12 @@ function LetsConnectSection() {
             "radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--accent) 8%, transparent) 0%, transparent 70%)",
         }}
       >
-        <h2 className="text-2xl font-bold tracking-tight">Let&apos;s connect</h2>
+        <h2 className="text-2xl font-bold tracking-tight">
+          Let&apos;s connect
+        </h2>
         <p className="text-sm text-[var(--text-muted)] max-w-sm leading-6">
-          Have a project in mind or just want to say hi? My inbox is always open.
+          Have a project in mind or just want to say hi? My inbox is always
+          open.
         </p>
         <a
           href={email}
@@ -391,10 +422,26 @@ function LetsConnectSection() {
 
 function Footer() {
   const links = [
-    { label: "GitHub", href: "https://github.com/Dimmsum", icon: <GitHubIcon /> },
-    { label: "LinkedIn", href: "https://linkedin.com/in/dimetrilee", icon: <LinkedInIcon /> },
-    { label: "Instagram", href: "https://instagram.com/dimetri.al", icon: <InstagramIcon /> },
-    { label: "Email", href: "mailto:dimetri.lee.2024@gmail.com", icon: <MailIcon /> },
+    {
+      label: "GitHub",
+      href: "https://github.com/Dimmsum",
+      icon: <GitHubIcon />,
+    },
+    {
+      label: "LinkedIn",
+      href: "https://linkedin.com/in/dimetrilee",
+      icon: <LinkedInIcon />,
+    },
+    {
+      label: "Instagram",
+      href: "https://instagram.com/dimetri.al",
+      icon: <InstagramIcon />,
+    },
+    {
+      label: "Email",
+      href: "mailto:dimetri.lee.2024@gmail.com",
+      icon: <MailIcon />,
+    },
   ];
   return (
     <footer className="mt-16 border-t border-[var(--border-subtle)] pt-6">
@@ -440,14 +487,24 @@ function postPalette(seed: string): string {
 function formatDate(iso: string): string {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return iso;
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  return d.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
 }
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 
 function GitHubIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden
+    >
       <path d="M12 .5C5.73.5.67 5.57.67 11.84c0 5.02 3.24 9.27 7.74 10.77.57.1.78-.25.78-.55 0-.27-.01-.99-.02-1.95-3.15.68-3.82-1.52-3.82-1.52-.51-1.31-1.26-1.66-1.26-1.66-1.03-.71.08-.69.08-.69 1.14.08 1.74 1.17 1.74 1.17 1.01 1.74 2.66 1.24 3.31.95.1-.74.4-1.24.72-1.53-2.52-.29-5.17-1.26-5.17-5.6 0-1.24.44-2.25 1.17-3.04-.12-.29-.51-1.44.11-3 0 0 .95-.31 3.12 1.16.9-.25 1.87-.38 2.83-.39.96 0 1.93.13 2.83.39 2.17-1.47 3.12-1.16 3.12-1.16.62 1.56.23 2.71.11 3 .73.79 1.17 1.8 1.17 3.04 0 4.35-2.66 5.31-5.19 5.59.41.36.78 1.05.78 2.12 0 1.53-.01 2.76-.01 3.13 0 .3.21.66.79.55 4.5-1.5 7.73-5.75 7.73-10.77C23.33 5.57 18.27.5 12 .5z" />
     </svg>
   );
@@ -455,7 +512,13 @@ function GitHubIcon() {
 
 function LinkedInIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden
+    >
       <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z" />
     </svg>
   );
@@ -463,7 +526,13 @@ function LinkedInIcon() {
 
 function XIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden
+    >
       <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.259 5.629L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z" />
     </svg>
   );
@@ -471,7 +540,13 @@ function XIcon() {
 
 function InstagramIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden
+    >
       <path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.7 3.7 0 0 1-1.38-.9 3.7 3.7 0 0 1-.9-1.38c-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zM12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63a5.86 5.86 0 0 0-2.12 1.39A5.86 5.86 0 0 0 .63 4.14C.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.31.79.73 1.46 1.39 2.12.66.66 1.33 1.08 2.12 1.39.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56a5.86 5.86 0 0 0 2.12-1.39 5.86 5.86 0 0 0 1.39-2.12c.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91a5.86 5.86 0 0 0-1.39-2.12A5.86 5.86 0 0 0 19.86.63c-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32zm0 10.16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.41-11.85a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z" />
     </svg>
   );
@@ -479,7 +554,17 @@ function InstagramIcon() {
 
 function MailIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
       <rect x="3" y="5" width="18" height="14" rx="2" />
       <path d="m3 7 9 6 9-6" />
     </svg>
@@ -488,7 +573,17 @@ function MailIcon() {
 
 function StarIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
       <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
     </svg>
   );
@@ -496,7 +591,17 @@ function StarIcon() {
 
 function CommitIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
       <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
     </svg>
   );
@@ -504,7 +609,17 @@ function CommitIcon() {
 
 function PostsIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
       <rect x="4" y="4" width="16" height="16" rx="2" />
       <path d="M8 8h8M8 12h8M8 16h5" />
     </svg>
@@ -513,7 +628,17 @@ function PostsIcon() {
 
 function ExternalLinkIcon() {
   return (
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <svg
+      width="13"
+      height="13"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
       <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
       <polyline points="15 3 21 3 21 9" />
       <line x1="10" y1="14" x2="21" y2="3" />

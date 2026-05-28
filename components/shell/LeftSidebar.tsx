@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { profile } from "@/lib/content/profile";
+import { ThemeToggle } from "./ThemeToggle";
 
 type Props = {
   collapsed: boolean;
@@ -174,6 +175,22 @@ export function LeftSidebar({ collapsed, onToggle }: Props) {
               </Link>
             );
           })}
+        </div>
+      </div>
+
+      {/* ── Theme toggle ───────────────────────────────────────────────── */}
+      <div className="mt-auto border-t border-[var(--border-subtle)] p-2">
+        <div className="flex h-8 items-center">
+          <div className="flex w-10 shrink-0 items-center justify-center">
+            <ThemeToggle />
+          </div>
+          <span
+            className={`overflow-hidden whitespace-nowrap text-sm text-[var(--text-muted)] transition-[max-width,opacity] duration-200 ${
+              collapsed ? "max-w-0 opacity-0" : "max-w-[200px] opacity-100"
+            }`}
+          >
+            Toggle theme
+          </span>
         </div>
       </div>
     </div>
