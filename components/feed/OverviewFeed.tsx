@@ -11,15 +11,24 @@ import type { GitHubEvent, Post, Project, Company } from "@/lib/content/types";
 const SPOTIFY_PLAYLIST_ID = "0tLjhJRpvDRdUYxTvBGOK7";
 const SPOTIFY_URL = `https://open.spotify.com/playlist/${SPOTIFY_PLAYLIST_ID}`;
 
-async function getSpotifyPlaylist(): Promise<{ title: string; thumbnail: string } | null> {
+async function getSpotifyPlaylist(): Promise<{
+  title: string;
+  thumbnail: string;
+} | null> {
   try {
     const res = await fetch(
       `https://open.spotify.com/oembed?url=${encodeURIComponent(SPOTIFY_URL)}`,
-      { next: { revalidate: 3600 } }
+      { next: { revalidate: 3600 } },
     );
     if (!res.ok) return null;
-    const data = await res.json() as { title?: string; thumbnail_url?: string };
-    return { title: data.title ?? "Playlist", thumbnail: data.thumbnail_url ?? "" };
+    const data = (await res.json()) as {
+      title?: string;
+      thumbnail_url?: string;
+    };
+    return {
+      title: data.title ?? "Playlist",
+      thumbnail: data.thumbnail_url ?? "",
+    };
   } catch {
     return null;
   }
@@ -43,7 +52,11 @@ export async function OverviewFeed() {
       <div className="flex flex-col gap-12">
         <HeroSection />
         <FeaturedProjectsSection projects={fallbackProjects} />
-        <ActivityRow events={events} posts={recentPosts} spotify={spotifyPlaylist} />
+        <ActivityRow
+          events={events}
+          posts={recentPosts}
+          spotify={spotifyPlaylist}
+        />
         <LetsConnectSection />
       </div>
       <Footer />
@@ -63,8 +76,10 @@ function HeroSection() {
 
   return (
     <section className="flex flex-col gap-6">
-      <div className="grid items-stretch gap-8" style={{ gridTemplateColumns: "3fr 2fr" }}>
-
+      <div
+        className="grid items-stretch gap-8"
+        style={{ gridTemplateColumns: "3fr 2fr" }}
+      >
         {/* ── Left column ── */}
         <div className="flex flex-col gap-4 min-w-0">
           <div className="flex flex-col gap-2">
@@ -73,15 +88,19 @@ function HeroSection() {
               <span style={{ color: "var(--accent)" }}>{displayName}</span>
             </h1>
             <p className="text-sm font-medium tracking-wide">
-              <span style={{ color: "#ffffff" }}>API Team Lead @ Sagicor Innovation Lab</span>
-              {" "}
-              <span style={{ color: "#ffffff" }}>|</span>
-              {" "}
+              <span style={{ color: "#ffffff" }}>
+                API Team Lead @ Sagicor Innovation Lab
+              </span>{" "}
+              <span style={{ color: "#ffffff" }}>|</span>{" "}
               <span style={{ color: "#ffffff" }}>Intern @ Intellibus</span>
             </p>
           </div>
           <p className="text-base leading-7 text-[var(--text-muted)] text-justify">
-            {highlightBio(profile.bio, ["API Team Lead @ Sagicor Innovation Lab", "Intern @ Intellibus", "|"])}
+            {highlightBio(profile.bio, [
+              "API Team Lead @ Sagicor Innovation Lab",
+              "Intern @ Intellibus",
+              "|",
+            ])}
           </p>
 
           <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
@@ -131,14 +150,13 @@ function HeroSection() {
         <div className="hidden sm:block p-2">
           <div className="relative h-full w-full overflow-hidden rounded-2xl">
             <Image
-              src="/picture-1.JPEG"
+              src="/picture-1.png"
               alt="Dimetri Lee"
               fill
-              className="object-cover object-top scale-x-[-1]"
+              className="object-cover object-top"
             />
           </div>
         </div>
-
       </div>
     </section>
   );
@@ -222,21 +240,38 @@ function FeaturedProjectCard({ project }: { project: Project }) {
   return (
     <Link href={`/projects/${project.slug}`}>
       <article className="group overflow-hidden rounded-xl shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-card-hover)] transition-all duration-200 bg-[var(--bg-card)]">
-
         {/* ── Title bar ── */}
         <div className="flex items-center px-4 py-3 bg-[var(--bg-elevated)]">
           <div className="flex items-center gap-1.5">
-            <span className="h-3 w-3 rounded-full" style={{ background: "#ff5f57" }} />
-            <span className="h-3 w-3 rounded-full" style={{ background: "#febc2e" }} />
-            <span className="h-3 w-3 rounded-full" style={{ background: "#28c840" }} />
+            <span
+              className="h-3 w-3 rounded-full"
+              style={{ background: "#ff5f57" }}
+            />
+            <span
+              className="h-3 w-3 rounded-full"
+              style={{ background: "#febc2e" }}
+            />
+            <span
+              className="h-3 w-3 rounded-full"
+              style={{ background: "#28c840" }}
+            />
           </div>
-          <span className="flex-1 text-center text-xs font-medium text-[var(--text-dim)]" style={{ fontFamily: "ui-monospace, monospace" }}>
+          <span
+            className="flex-1 text-center text-xs font-medium text-[var(--text-dim)]"
+            style={{ fontFamily: "ui-monospace, monospace" }}
+          >
             {slug}.sh
           </span>
         </div>
 
         {/* ── Terminal body ── */}
-        <div className="px-4 py-4 text-xs leading-6 select-none" style={{ fontFamily: "ui-monospace, 'Cascadia Code', 'Fira Code', monospace", minHeight: "9rem" }}>
+        <div
+          className="px-4 py-4 text-xs leading-6 select-none"
+          style={{
+            fontFamily: "ui-monospace, 'Cascadia Code', 'Fira Code', monospace",
+            minHeight: "9rem",
+          }}
+        >
           <p>
             <span style={{ color: "#28c840" }}>➜</span>
             <span style={{ color: "#58a6ff" }}> ~/projects</span>
@@ -248,19 +283,33 @@ function FeaturedProjectCard({ project }: { project: Project }) {
           </p>
           <p className="text-[var(--text-muted)]">{project.tagline}</p>
           <p className="mt-2">
-            <span className="text-[var(--text-dim)]">status  </span>
-            <span style={{ color: project.status === "in-progress" ? "#28c840" : project.status === "completed" ? "#58a6ff" : "var(--text-dim)" }}>
+            <span className="text-[var(--text-dim)]">status </span>
+            <span
+              style={{
+                color:
+                  project.status === "in-progress"
+                    ? "#28c840"
+                    : project.status === "completed"
+                      ? "#58a6ff"
+                      : "var(--text-dim)",
+              }}
+            >
               {project.status}
             </span>
           </p>
           <p>
-            <span className="text-[var(--text-dim)]">stack   </span>
-            <span className="text-[var(--text-muted)]">{project.tags.join(", ")}</span>
+            <span className="text-[var(--text-dim)]">stack </span>
+            <span className="text-[var(--text-muted)]">
+              {project.tags.join(", ")}
+            </span>
           </p>
           <p className="mt-2">
             <span style={{ color: "#28c840" }}>➜</span>
             <span style={{ color: "#58a6ff" }}> ~/projects</span>
-            <span className="inline-block w-2 h-4 ml-1 align-middle animate-pulse bg-[var(--text-primary)]" style={{ opacity: 0.8 }} />
+            <span
+              className="inline-block w-2 h-4 ml-1 align-middle animate-pulse bg-[var(--text-primary)]"
+              style={{ opacity: 0.8 }}
+            />
           </p>
         </div>
       </article>
@@ -288,14 +337,20 @@ function ActivityRow({
   );
 }
 
-function SpotifyCard({ playlist }: { playlist: { title: string; thumbnail: string } | null }) {
+function SpotifyCard({
+  playlist,
+}: {
+  playlist: { title: string; thumbnail: string } | null;
+}) {
   return (
     <div className="flex flex-col rounded-xl bg-[var(--bg-card)] shadow-[var(--shadow-card)] overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-subtle)]">
         <div className="flex items-center gap-2">
           <SpotifyIcon />
-          <span className="text-sm font-semibold text-[var(--text-primary)]">Favorite Playlist</span>
+          <span className="text-sm font-semibold text-[var(--text-primary)]">
+            Favorite Playlist
+          </span>
         </div>
       </div>
 
@@ -482,9 +537,12 @@ function LetsConnectSection() {
             "radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--accent) 8%, transparent) 0%, transparent 70%)",
         }}
       >
-        <h2 className="text-2xl font-bold tracking-tight">Let&apos;s connect</h2>
+        <h2 className="text-2xl font-bold tracking-tight">
+          Let&apos;s connect
+        </h2>
         <p className="text-sm text-[var(--text-muted)] max-w-sm leading-6">
-          Have a project in mind or just want to say hi? My inbox is always open.
+          Have a project in mind or just want to say hi? My inbox is always
+          open.
         </p>
         <a
           href={email}
@@ -552,14 +610,20 @@ function Footer() {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function highlightBio(text: string, phrases: string[]): React.ReactNode {
-  const pattern = new RegExp(`(${phrases.map((p) => p.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})`, "g");
+  const pattern = new RegExp(
+    `(${phrases.map((p) => p.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})`,
+    "g",
+  );
   const parts = text.split(pattern);
   const set = new Set(phrases);
   return parts.map((part, i) => {
     if (!set.has(part)) return part;
-    if (part === "|") return (
-      <span key={i} style={{ color: "#ffffff" }}>{part}</span>
-    );
+    if (part === "|")
+      return (
+        <span key={i} style={{ color: "#ffffff" }}>
+          {part}
+        </span>
+      );
     return (
       <span key={i} className="font-bold" style={{ color: "var(--accent)" }}>
         {part}
@@ -712,7 +776,13 @@ function PostsIcon() {
 
 function SpotifyIcon({ size = 16 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="#1db954" aria-hidden>
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="#1db954"
+      aria-hidden
+    >
       <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.516 17.313a.75.75 0 0 1-1.032.244c-2.827-1.728-6.387-2.12-10.578-1.162a.75.75 0 1 1-.334-1.463c4.587-1.047 8.52-.597 11.7 1.349a.75.75 0 0 1 .244 1.032zm1.472-3.27a.937.937 0 0 1-1.288.308c-3.234-1.988-8.164-2.563-11.99-1.403a.937.937 0 1 1-.544-1.793c4.375-1.328 9.813-.685 13.514 1.6a.938.938 0 0 1 .308 1.288zm.126-3.403C15.34 8.39 9.108 8.186 5.705 9.205a1.125 1.125 0 1 1-.652-2.154c3.93-1.19 10.465-.96 14.593 1.617a1.125 1.125 0 0 1-1.532 1.972z" />
     </svg>
   );
