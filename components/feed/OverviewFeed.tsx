@@ -443,17 +443,12 @@ function RecentCommitsCard({ events }: { events: GitHubEvent[] }) {
   );
 }
 
-function seededInt(seed: string, max: number): number {
-  let h = 0;
-  for (let i = 0; i < seed.length; i++) h = (Math.imul(31, h) + seed.charCodeAt(i)) | 0;
-  return Math.abs(h) % max;
-}
 
 function CommitRow({ event }: { event: GitHubEvent }) {
   const repoShort = event.repo.split("/").pop() ?? event.repo;
   const isCommit = event.type === "push";
-  const additions = isCommit ? seededInt(event.url + "a", 40) + 1 : null;
-  const deletions = isCommit ? seededInt(event.url + "d", 10) : null;
+  const additions = isCommit && event.additions != null ? event.additions : null;
+  const deletions = isCommit && event.deletions != null ? event.deletions : null;
 
   return (
     <li className="flex items-start justify-between gap-3 px-4 py-2.5 hover:bg-[var(--bg-highlight)] transition-colors">

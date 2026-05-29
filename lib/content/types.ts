@@ -44,6 +44,8 @@ export type GitHubEvent = {
   summary: string;
   url: string;
   at: string;
+  additions?: number;
+  deletions?: number;
 };
 
 export type Track = {
