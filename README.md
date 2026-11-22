@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# dimetrilee.com
 
-## Getting Started
-
-First, run the development server:
+Personal site for Dimetri Lee. Next.js 16 (App Router, TypeScript), plain CSS, Montserrat (self-hosted).
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev      # http://localhost:3000
+npm run build    # production build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Pages
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Route | What's on it |
+| --- | --- |
+| `/` | Hero, stats, featured work, most viewed posts, latest writing |
+| `/work` | All projects (filter by type) + live GitHub repos |
+| `/work/[slug]` | One project: write-up, stack, links, screenshots |
+| `/content` | TikTok + Instagram reach, top posts, "work with me" |
+| `/blog`, `/blog/[slug]` | Posts (filter by tag) |
+| `/about` | Bio, photos, resume (`/about#resume`) |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Editing
 
-## Learn More
+Everything you'd change lives in `content/` and `public/`.
 
-To learn more about Next.js, take a look at the following resources:
+**Settings** – `content/site.ts`: name, intro, email, socials, follower counts, stats, top posts, bio, jobs, skills.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Add a project** – copy `content/projects/_template.md`, rename it (`my-app.md` becomes `/work/my-app`), fill in the top block, write the story underneath in Markdown.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `images`: the first one is the cover, the rest show on the project page. Put files in `public/images/projects/` and list them as `/images/projects/name.jpg`.
+- `featured: true` puts it on the home page (first three by `order`).
+- No images yet? A navy cover with the title is drawn for you.
 
-## Deploy on Vercel
+**Add a post** – copy `content/posts/_template.md`, rename it, write. Code blocks, lists, links and images all work.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**Photos** – `public/images/about/` (about page), `public/images/posts/` (video thumbnails), and set `portrait` in `site.ts` for the hero.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Resume** – drop your PDF at `public/resume.pdf`.
+
+Files starting with `_` are ignored.
+
+## GitHub
+
+`/work` pulls your latest public repos from the GitHub API and refreshes them every hour. If GitHub can't be reached, it shows `github.fallback` from `site.ts`.
+
+## Deploy
+
+Push to GitHub and import the repo on [Vercel](https://vercel.com/new). No environment variables needed. Then set `url` in `content/site.ts` to your domain.
+
+## Notes
+
+- Light and dark mode follow the visitor's system setting; the toggle remembers their choice.
+- Motion is turned off for visitors who prefer reduced motion.
+- Instagram and TikTok don't allow pulling your stats or posts without a business API token, so counts and top posts are set by hand in `site.ts`. To show live embeds later, add TikTok's and Instagram's embed scripts to a post tile.

@@ -1,5 +1,124 @@
-import { OverviewFeed } from "@/components/feed/OverviewFeed";
+import Link from "next/link";
+import { site, socialLinks, type SocialKey } from "@/content/site";
+import { getPosts, getProjects } from "@/lib/content";
+import { summary, viewsToNumber } from "@/lib/format";
+import { Icon } from "@/components/Icon";
+import { Cover } from "@/components/Cover";
+import { Lines } from "@/components/Lines";
+import { Stats } from "@/components/Stats";
+import { PostEntry, PostTile, ProjectGrid } from "@/components/Cards";
 
-export default function Home() {
-  return <OverviewFeed />;
+export default async function Home() {
+  const projects = (await getProjects()).filter((p) => p.featured).slice(0, 3).map(summary);
+  const posts = (await getPosts()).slice(0, 2).map(summary);
+  const top = (Object.keys(site.socials) as SocialKey[])
+    .flatMap((k) => site.socials[k].posts.map((x) => ({ ...x, k })))
+    .sort((a, b) => viewsToNumber(b.views) - viewsToNumber(a.views))
+    .slice(0, 4);
+
+  return (
+    <>
+      <section className="band">
+        <div className="wrap">
+          <div className="hero">
+            <div>
+              <p className="kicker rise">{site.kicker}</p>
+              <h1 className="name rise" style={{ "--d": ".08s" } as React.CSSProperties}>
+                <b>{site.first}</b>
+                <span>{site.last}</span>
+              </h1>
+              <p className="lede rise" style={{ "--d": ".18s" } as React.CSSProperties} dangerouslySetInnerHTML={{ __html: site.lede }} />
+              <div className="cta rise" style={{ "--d": ".26s" } as React.CSSProperties}>
+                <Link className="btn" href="/content">
+                  <Icon name="mail" />
+                  Work with me
+                </Link>
+                <Link className="btn ghost" href="/work">
+                  See my work
+                </Link>
+                {socialLinks.map((s) => (
+                  <a key={s.label} className="iconlink" href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.label}>
+                    <Icon name={s.icon} />
+                  </a>
+                ))}
+              </div>
+            </div>
+            <div className="portrait rise" style={{ "--d": ".14s" } as React.CSSProperties}>
+              <Cover
+                src={site.portrait}
+                alt={`${site.first} ${site.last}`}
+                fallback={
+                  <div className="mono">
+                    <Lines seed={3} />
+                    <b>
+                      {site.first[0]}
+                      <i>{site.last[0]}</i>
+                    </b>
+                  </div>
+                }
+              />
+              <div className="where">
+                <Icon name="pin" />
+                {site.location}
+              </div>
+            </div>
+          </div>
+          <Stats stats={site.stats} note={site.statsNote} />
+        </div>
+      </section>
+
+      <section className="band tight">
+        <div className="wrap">
+          <div className="head">
+            <h2>
+              Selected <span>work</span>
+            </h2>
+            <Link className="textlink" href="/work">
+              All projects
+              <Icon name="right" />
+            </Link>
+          </div>
+          <ProjectGrid projects={projects} />
+        </div>
+      </section>
+
+      <section className="band navy">
+        <div className="wrap">
+          <div className="head">
+            <h2>
+              Most <span>viewed</span>
+            </h2>
+            <Link className="textlink" href="/content">
+              Content &amp; stats
+              <Icon name="right" />
+            </Link>
+          </div>
+          <div className="posts four">
+            {top.map((x) => (
+              <PostTile key={x.title} x={x} platform={x.k} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="band">
+        <div className="wrap">
+          <div className="head">
+            <h2>
+              Latest <span>writing</span>
+            </h2>
+            <Link className="textlink" href="/blog">
+              All posts
+              <Icon name="right" />
+            </Link>
+          </div>
+          <div className="postlist">
+            {posts.map((p) => (
+              <PostEntry key={p.slug} p={p} />
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
+  );
 }
