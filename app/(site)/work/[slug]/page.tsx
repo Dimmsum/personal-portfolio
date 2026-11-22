@@ -8,7 +8,9 @@ import { Cover } from "@/components/Cover";
 import { GenCover, hash } from "@/components/Lines";
 
 export async function generateStaticParams() {
-  return (await getProjects()).map((p) => ({ slug: p.slug }));
+  const slugs = (await getProjects()).map((p) => ({ slug: p.slug }));
+  // Cache Components needs at least one; new projects still render on first visit.
+  return slugs.length ? slugs : [{ slug: "_" }];
 }
 
 export async function generateMetadata({ params }: PageProps<"/work/[slug]">): Promise<Metadata> {

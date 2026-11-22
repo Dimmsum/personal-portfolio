@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { site, socialLinks, formatCount, type SocialKey } from "@/content/site";
-import { getPosts, getProjects } from "@/lib/content";
+import { socialLinksFor, formatCount, totalFollowers, type SocialKey } from "@/content/site";
+import { getPosts, getProjects, getSite } from "@/lib/content";
 import { summary } from "@/lib/format";
 import { Icon } from "@/components/Icon";
 import { Cover } from "@/components/Cover";
@@ -11,7 +11,9 @@ import { VideoGrid } from "@/components/VideoEmbed";
 export default async function Home() {
   const projects = (await getProjects()).filter((p) => p.featured).slice(0, 3).map(summary);
   const posts = (await getPosts()).slice(0, 2).map(summary);
-  const total = Object.values(site.socials).reduce((n, x) => n + x.followers, 0);
+  const site = await getSite();
+  const socialLinks = socialLinksFor(site);
+  const total = totalFollowers(site);
 
   return (
     <>

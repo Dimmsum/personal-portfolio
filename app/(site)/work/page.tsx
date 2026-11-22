@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { site } from "@/content/site";
-import { getProjects, getRepos } from "@/lib/content";
+import { getProjects, getRepos, getSite } from "@/lib/content";
 import { summary } from "@/lib/format";
 import { Icon } from "@/components/Icon";
 import { WorkBrowser } from "@/components/Filters";
@@ -9,6 +8,7 @@ import { WorkBrowser } from "@/components/Filters";
 export const metadata: Metadata = { title: "Work", description: "Apps, backends, AI tools and design." };
 
 async function Repos() {
+  const site = await getSite();
   const live = await getRepos(site.github.user, site.github.count);
   const repos = live ?? site.github.fallback;
   return (

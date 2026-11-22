@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
-import { site } from "@/content/site";
+import { getSite } from "@/lib/content";
 import { Icon } from "@/components/Icon";
 import { Cover } from "@/components/Cover";
 import { GenCover } from "@/components/Lines";
 
-export const metadata: Metadata = { title: "About", description: `About ${site.first} ${site.last}, plus resume.` };
+export async function generateMetadata(): Promise<Metadata> {
+  const site = await getSite();
+  return { title: "About", description: `About ${site.first} ${site.last}, plus resume.` };
+}
 
 type Entry = { org: string; role: string; when: string; text: string; logo?: string };
 
@@ -23,7 +26,8 @@ function Job({ j }: { j: Entry }) {
   );
 }
 
-export default function About() {
+export default async function About() {
+  const site = await getSite();
   return (
     <>
       <section className="band">
@@ -37,18 +41,18 @@ export default function About() {
         <div className="wrap about">
           <div className="photos">
             {site.about.photos.map((p, i) => (
-              <div className="ph" key={p.caption}>
+              <div className="ph" key={i}>
                 <Cover src={p.src} alt={p.caption} fallback={<GenCover label={p.caption} seed={i + 11} />} />
               </div>
             ))}
           </div>
           <div className="bio">
-            {site.about.bio.map((t) => (
-              <p key={t}>{t}</p>
+            {site.about.bio.map((t, i) => (
+              <p key={i}>{t}</p>
             ))}
             <ul className="facts">
-              {site.about.facts.map((f) => (
-                <li key={f.text}>
+              {site.about.facts.map((f, i) => (
+                <li key={i}>
                   <Icon name={f.icon} />
                   {f.text}
                 </li>
@@ -69,23 +73,23 @@ export default function About() {
           <div className="resume">
             <div>
               <h3>Experience</h3>
-              {site.jobs.map((j) => (
-                <Job key={j.org} j={j} />
+              {site.jobs.map((j, i) => (
+                <Job key={i} j={j} />
               ))}
             </div>
             <div>
               <h3>Skills</h3>
               <div className="skills">
-                {site.skills.map((s) => (
-                  <div key={s.group}>
+                {site.skills.map((s, i) => (
+                  <div key={i}>
                     <b>{s.group}</b>
                     <span>{s.items}</span>
                   </div>
                 ))}
               </div>
               <h3>Education</h3>
-              {site.education.map((j) => (
-                <Job key={j.org} j={j} />
+              {site.education.map((j, i) => (
+                <Job key={i} j={j} />
               ))}
             </div>
           </div>

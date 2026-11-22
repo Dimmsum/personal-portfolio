@@ -1,0 +1,122 @@
+/* Admin dashboard. Uses the site's colour tokens from globals.css. */
+.ad{--card:light-dark(#f6f7fb,#0b1534);--field:light-dark(#ffffff,#071029);--ok:light-dark(#0f7a43,#5fd39a);--bad:light-dark(#b42318,#ff8a80);--warn:light-dark(#9a6200,#f5c063);min-height:100vh}
+.ad h1{margin:4px 0 0;font-size:clamp(32px,4vw,44px);font-weight:900;letter-spacing:-.04em;line-height:1}
+.ad h2{margin:0;font-size:18px;font-weight:700;letter-spacing:-.01em}
+.ad code{font-size:.9em;background:color-mix(in srgb,var(--ink) 8%,transparent);padding:1px 5px}
+.ad .btn{height:42px;font-size:14px}
+.ad .btn:disabled{opacity:.6;cursor:default;transform:none}
+
+/* top bar */
+.ad-bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:8px 20px;flex-wrap:wrap;min-height:60px;padding:8px max(4vw,16px);background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.ad-logo{font-weight:900;font-size:17px;letter-spacing:-.02em}
+.ad-nav{display:flex;gap:2px;margin-right:auto}
+.ad-nav a{padding:8px 12px;font-size:14px;font-weight:500;color:var(--muted)}
+.ad-nav a[aria-current=page]{color:var(--ink);font-weight:700;box-shadow:inset 0 -2px 0 var(--accent)}
+.ad-who{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted)}
+.ad-who span{max-width:22ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ad-link{font-size:14px;font-weight:600;color:var(--accent);white-space:nowrap}
+.ad-link:hover{text-decoration:underline}
+.ad-main{max-width:1240px;margin:0 auto;padding:32px max(4vw,16px) 120px}
+
+/* building blocks */
+.ad-head{display:flex;align-items:end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+.ad-muted{color:var(--muted);font-size:14px;margin:0}
+.ad-error{color:var(--bad);font-size:14px;margin:0}
+.ad-empty{padding:48px 24px;text-align:center;color:var(--muted);border:1.5px dashed var(--line)}
+.ad-card{background:var(--card);padding:20px;border:1px solid var(--line)}
+.ad-stack{display:flex;flex-direction:column;gap:16px}
+.ad-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ad-two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ad-three{display:grid;grid-template-columns:1fr 2fr 1fr;gap:12px}
+.ad-btn{display:inline-flex;align-items:center;height:36px;padding:0 14px;font-size:13px;font-weight:600;box-shadow:inset 0 0 0 1.5px var(--line);background:var(--field)}
+.ad-btn:hover:not(:disabled){box-shadow:inset 0 0 0 1.5px var(--ink)}
+.ad-btn:disabled{opacity:.4;cursor:default}
+.ad-btn.quiet{background:transparent;box-shadow:none;color:var(--muted)}
+.ad-btn.quiet:hover:not(:disabled){color:var(--ink);box-shadow:none}
+.ad-btn.danger{background:var(--bad);color:#fff;box-shadow:none}
+.ad-pill{font-size:12px;font-weight:600;padding:3px 10px;border-radius:99px;color:var(--muted);box-shadow:inset 0 0 0 1px var(--line);white-space:nowrap}
+.ad-pill.on{color:var(--ok);box-shadow:inset 0 0 0 1px currentColor}
+
+/* form fields */
+.ad-field{display:flex;flex-direction:column;gap:6px}
+.ad-field>span{font-size:13px;font-weight:600}
+.ad-field small,.ad-toggle small{font-size:12px;color:var(--muted)}
+.ad input:not([type=checkbox]),.ad textarea,.ad select{width:100%;font:inherit;font-size:15px;color:var(--ink);background:var(--field);border:1.5px solid var(--line);padding:9px 12px;border-radius:0}
+.ad input:focus,.ad textarea:focus,.ad select:focus{outline:none;border-color:var(--accent)}
+.ad textarea{resize:vertical;line-height:1.55}
+.ad-title{font-size:clamp(24px,3vw,32px)!important;font-weight:800;letter-spacing:-.02em;padding:12px 14px!important}
+.ad-toggle{display:flex;gap:12px;align-items:flex-start;cursor:pointer}
+.ad-toggle input{appearance:none;flex:none;width:40px;height:24px;margin:0;border-radius:99px;background:var(--line);position:relative;cursor:pointer;transition:background .2s}
+.ad-toggle input::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .2s}
+.ad-toggle input:checked{background:var(--ok)}
+.ad-toggle input:checked::after{transform:translateX(16px)}
+.ad-toggle input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.ad-toggle span{display:flex;flex-direction:column;gap:2px;font-size:14px}
+
+/* lists */
+.ad-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.ad-list li{display:flex;align-items:center;gap:16px;border-bottom:1px solid var(--line)}
+.ad-list li>a:first-child{flex:1;display:flex;flex-direction:column;gap:2px;padding:16px 0}
+.ad-list li>a:first-child:hover b{color:var(--accent)}
+.ad-list b{font-weight:600;font-size:16px}
+
+/* editor */
+.ad-grid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:24px;align-items:start}
+.ad-side{position:sticky;top:84px}
+.ad-md{display:flex;flex-direction:column;gap:8px}
+.ad-md textarea{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;line-height:1.7;min-height:360px}
+.ad-md-bar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px}
+.ad-tabs{display:flex}
+.ad-tabs button{padding:8px 14px;font-size:14px;font-weight:600;color:var(--muted)}
+.ad-tabs button[aria-selected=true]{color:var(--ink);box-shadow:inset 0 -2px 0 var(--accent)}
+.ad-tools{display:flex;flex-wrap:wrap;gap:2px;align-items:center}
+.ad-tools>button:not(.ad-btn){min-width:34px;height:34px;padding:0 8px;font-size:13px;font-weight:700;color:var(--muted)}
+.ad-tools>button:not(.ad-btn):hover{color:var(--ink);background:var(--card)}
+.ad-tools .ad-btn{height:34px;margin-left:6px}
+.ad-preview{min-height:360px;padding:20px 24px;border:1.5px solid var(--line);background:var(--field)}
+.ad-preview>:first-child{margin-top:0}
+
+/* images */
+.ad-image{display:flex;gap:14px;align-items:flex-start}
+.ad-image-ctl{flex:1;display:flex;flex-direction:column;gap:8px}
+.ad-thumb{flex:none;width:88px;height:88px;display:grid;place-items:center;background:var(--field);border:1.5px solid var(--line);overflow:hidden}
+.ad-thumb img{width:100%;height:100%;object-fit:cover}
+.ad-thumb span{font-size:11px;color:var(--muted)}
+.ad-gallery{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+.ad-gallery li{position:relative;display:flex;flex-direction:column;gap:4px}
+.ad-gallery img{aspect-ratio:4/3;width:100%;object-fit:cover;border:1px solid var(--line)}
+.ad-gallery em{position:absolute;top:6px;left:6px;font-style:normal;font-size:11px;font-weight:700;padding:2px 8px;background:var(--ink);color:var(--bg)}
+.ad-gallery .ad-btn{height:28px;padding:0 6px}
+
+/* settings */
+.ad-settings{max-width:880px}
+.ad-section h2{font-size:20px}
+.ad-item{display:flex;gap:12px;padding:14px;background:var(--bg);border:1px solid var(--line)}
+.ad-item-fields{flex:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.ad-item-fields .wide{grid-column:1/-1}
+.ad-item-ctl{display:flex;flex-direction:column;gap:2px}
+.ad-item-ctl .ad-btn{height:30px;padding:0 8px}
+
+/* save bar */
+.ad-savebar{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap;padding:12px max(4vw,16px);background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line)}
+.ad-status{margin-right:auto;font-size:14px;font-weight:600;color:var(--ok)}
+.ad-status.warn{color:var(--warn)}
+.ad-status.bad{color:var(--bad)}
+
+/* login */
+.ad-login{max-width:400px;margin:0 auto;padding:clamp(48px,12vh,120px) 16px;display:flex;flex-direction:column;gap:20px}
+.ad-login h1{font-size:clamp(48px,8vw,72px)}
+.ad-login h1 span{font-weight:100}
+.ad-login .btn{justify-content:center}
+
+@media(max-width:900px){
+  .ad-grid{grid-template-columns:1fr}
+  .ad-side{position:static;order:-1}
+}
+@media(max-width:600px){
+  .ad-two,.ad-three{grid-template-columns:1fr}
+  .ad-who span{display:none}
+  .ad-item{flex-direction:column}
+  .ad-item-ctl{flex-direction:row}
+  .ad-image{flex-direction:column}
+}

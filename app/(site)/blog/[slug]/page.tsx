@@ -7,7 +7,9 @@ import { formatDate } from "@/lib/format";
 import { Icon } from "@/components/Icon";
 
 export async function generateStaticParams() {
-  return (await getPosts()).map((p) => ({ slug: p.slug }));
+  const slugs = (await getPosts()).map((p) => ({ slug: p.slug }));
+  // Cache Components needs at least one; new posts still render on first visit.
+  return slugs.length ? slugs : [{ slug: "_" }];
 }
 
 export async function generateMetadata({ params }: PageProps<"/blog/[slug]">): Promise<Metadata> {

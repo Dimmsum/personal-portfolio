@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { site, stats, formatCount, type SocialKey } from "@/content/site";
+import { statsFor, formatCount, type SocialKey } from "@/content/site";
+import { getSite } from "@/lib/content";
 import { Icon } from "@/components/Icon";
 import { Stats } from "@/components/Stats";
 import { VideoGrid } from "@/components/VideoEmbed";
@@ -7,7 +8,9 @@ import { CopyEmail } from "@/components/CopyEmail";
 
 export const metadata: Metadata = { title: "Content", description: "TikTok and Instagram reach, top posts and how to work together." };
 
-export default function ContentPage() {
+export default async function ContentPage() {
+  const site = await getSite();
+  const stats = statsFor(site);
   return (
     <>
       <section className="band">
@@ -46,7 +49,7 @@ export default function ContentPage() {
           <div>
             <ul className="offers">
               {site.offers.map((o) => (
-                <li key={o.title}>
+                <li key={o.title + o.icon}>
                   <Icon name={o.icon} />
                   <div>
                     <b>{o.title}</b>

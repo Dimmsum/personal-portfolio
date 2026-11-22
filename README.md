@@ -18,28 +18,34 @@ npm run build    # production build
 | `/content` | TikTok + Instagram reach, top posts, "work with me" |
 | `/blog`, `/blog/[slug]` | Posts (filter by tag) |
 | `/about` | Bio, photos, resume (`/about#resume`) |
+| `/admin` | Sign in and edit posts, projects and settings |
 
-## Editing
+## Editing (no code needed)
 
-Everything you'd change lives in `content/` and `public/`.
+Go to **`/admin`**, sign in, and edit everything from there:
 
-**Settings** – `content/site.ts`: name, intro, email, socials, bio, jobs, skills.
+- **Blog**: write, edit, delete. Posts start as drafts; flip *Published* when ready. Markdown editor with a preview tab; paste or drag an image in to upload it. `Cmd/Ctrl+S` saves.
+- **Projects**: same idea, plus an image gallery (first image is the cover), *Feature on home page*, and an order number.
+- **Settings**: intro, portrait, socials and follower counts, top videos, offers, bio, photos, jobs, skills, education, resume PDF.
 
-**Follower counts and top videos** – in `content/site.ts`, update `followers` for each platform (the totals on the site add up on their own), and list your best videos in `topVideos`, best first. Paste a TikTok video link or an Instagram post/reel link and the site embeds the official player. `views` is optional.
+Saving updates the live site straight away. No redeploy.
 
-**Add a project** – copy `content/projects/_template.md`, rename it (`my-app.md` becomes `/work/my-app`), fill in the top block, write the story underneath in Markdown.
+### One-time setup (about 10 minutes)
 
-- `images`: the first one is the cover, the rest show on the project page. Put files in `public/images/projects/` and list them as `/images/projects/name.jpg`.
-- `featured: true` puts it on the home page (first three by `order`).
-- No images yet? A navy cover with the title is drawn for you.
+1. Create a free project at [supabase.com](https://supabase.com/dashboard).
+2. In **SQL Editor**, open `supabase/schema.sql`, change `you@example.com` on the last line to your login email, paste it in and **Run**. Then paste and run `supabase/seed.sql` (copies in the posts and projects from `content/`).
+3. In **Authentication → Users**, click **Add user → Create new user** with that same email and a password. Tick *Auto confirm*.
+4. In **Authentication → Sign In / Providers**, turn off **Allow new users to sign up**, so nobody else can make an account.
+5. In **Project Settings → API** (or the **Connect** button), copy the project URL and the publishable (or anon) key into `.env.local`. Use `.env.example` as the template. Add the same two variables in Vercel under **Settings → Environment Variables**, then redeploy once.
+6. Run `npm run dev`, open http://localhost:3000/admin and sign in.
 
-**Add a post** – copy `content/posts/_template.md`, rename it, write. Code blocks, lists, links and images all work.
+To add another editor, insert their email into the `admins` table in Supabase and create a user for them.
 
-**Photos** – `public/images/about/` (about page), `public/images/posts/` (video thumbnails), and set `portrait` in `site.ts` for the hero.
+### How it fits together
 
-**Resume** – drop your PDF at `public/resume.pdf`.
-
-Files starting with `_` are ignored.
+- Supabase holds the content (`posts`, `projects`, `settings` tables) and uploads (the public `media` bucket). Row-level security lets visitors read published items only; writing needs a logged-in email listed in `admins`.
+- `content/site.ts` holds the **defaults** for settings. Anything saved at `/admin/settings` overrides them.
+- Without the Supabase env vars, the site falls back to the Markdown files in `content/posts` and `content/projects`. Once Supabase is connected, those files are only a backup; edit in `/admin`. `node scripts/make-seed.mjs` regenerates `seed.sql` from them.
 
 ## GitHub
 
@@ -47,10 +53,10 @@ Files starting with `_` are ignored.
 
 ## Deploy
 
-Push to GitHub and import the repo on [Vercel](https://vercel.com/new). No environment variables needed. Then set `url` in `content/site.ts` to your domain.
+Push to GitHub and import the repo on [Vercel](https://vercel.com/new). Add the two Supabase variables from `.env.example`. Then set the site address in `/admin/settings`.
 
 ## Notes
 
 - Light and dark mode follow the visitor's system setting; the toggle remembers their choice.
 - Motion is turned off for visitors who prefer reduced motion.
-- Follower counts are set by hand in `site.ts`; pulling them live would need TikTok's Display API and the Instagram API.
+- Follower counts are set by hand in `/admin/settings`; pulling them live would need TikTok's Display API and the Instagram API.

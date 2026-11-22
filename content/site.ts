@@ -1,12 +1,11 @@
 /* ==========================================================================
-   SITE SETTINGS
-   Everything on the site that isn't a project or a blog post lives here.
-   Projects:   content/projects/*.md   (one file per project)
-   Blog posts: content/posts/*.md      (one file per post)
-   Images:     public/images/...       (reference them as "/images/...")
+   SITE SETTINGS: DEFAULTS
+   Once Supabase is set up you edit all of this at /admin/settings, and what you
+   save there wins. These values are used for anything you haven't saved yet,
+   and for the whole site when Supabase isn't configured.
    ========================================================================== */
 
-export const site = {
+export const defaultSite = {
   url: "https://dimetrilee.com",
   first: "Dimetri",
   last: "Lee",
@@ -84,8 +83,8 @@ export const site = {
   education: [{ org: "University of Technology, Jamaica", role: "Computing degree", when: "In progress", text: "" }],
 };
 
-export type Site = typeof site;
-export type SocialKey = keyof typeof site.socials;
+export type Site = typeof defaultSite;
+export type SocialKey = keyof Site["socials"];
 
 /* 843 -> "843", 12400 -> "12.4K", 1200000 -> "1.2M" */
 export function formatCount(n: number) {
@@ -94,16 +93,17 @@ export function formatCount(n: number) {
   return n.toLocaleString("en-US");
 }
 
-/* Totals are worked out from the follower counts above. */
-const totalFollowers = Object.values(site.socials).reduce((a, s) => a + s.followers, 0);
-export const stats = [
-  { icon: "users", value: formatCount(totalFollowers), label: "Followers across platforms" },
+export const totalFollowers = (site: Site) => Object.values(site.socials).reduce((a, s) => a + (Number(s.followers) || 0), 0);
+
+/* Totals are worked out from the follower counts. */
+export const statsFor = (site: Site) => [
+  { icon: "users", value: formatCount(totalFollowers(site)), label: "Followers across platforms" },
   { icon: "tiktok", value: formatCount(site.socials.tiktok.followers), label: "TikTok followers" },
   { icon: "instagram", value: formatCount(site.socials.instagram.followers), label: "Instagram followers" },
 ];
 
 /* Icons shown in the hero and footer */
-export const socialLinks = [
+export const socialLinksFor = (site: Site) => [
   { icon: "tiktok", href: site.socials.tiktok.url, label: "TikTok" },
   { icon: "instagram", href: site.socials.instagram.url, label: "Instagram" },
   { icon: "github", href: `https://github.com/${site.github.user}`, label: "GitHub" },
