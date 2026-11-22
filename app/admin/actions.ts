@@ -1,5 +1,6 @@
 "use server";
 import { updateTag } from "next/cache";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth";
 import { TAGS } from "@/lib/content";
@@ -17,16 +18,77 @@ const friendly = (msg: string) =>
 
 /* ---------------------------------------------------------------- auth */
 
-export async function login(_: unknown, form: FormData): Promise<{ error: string } | undefined> {
-  if (!hasSupabase) return { error: "Supabase isn't set up yet. Add the keys to .env.local (see README)." };
+export type AuthState = { error?: string; field?: "email" | "password"; email?: string; sent?: boolean } | undefined;
+
+/* Only allow redirects back into the admin area, never to another site. */
+const safeNext = (v: unknown) => {
+  const s = String(v ?? "");
+  return s.startsWith("/admin/") && !s.startsWith("//") && !s.includes("\\") && !s.startsWith("/admin/login") ? s : "/admin/posts";
+};
+
+const authMessage = (code: string | undefined, message: string) => {
+  switch (code) {
+    case "invalid_credentials":
+      return "That email and password don't match. Check both and try again.";
+    case "email_not_confirmed":
+      return "This account isn't confirmed yet. In Supabase, open Authentication → Users and confirm it.";
+    case "over_request_rate_limit":
+    case "over_email_send_rate_limit":
+      return "Too many attempts. Wait a few minutes, then try again.";
+    case "weak_password":
+      return "That password is too easy to guess. Use a longer one.";
+    case "same_password":
+      return "That's your current password. Choose a new one.";
+    default:
+      return message;
+  }
+};
+
+export async function login(_: AuthState, form: FormData): Promise<AuthState> {
+  const email = text(form.get("email"), 320).toLowerCase();
+  const password = String(form.get("password") ?? "");
+  if (!hasSupabase) return { email, error: "Sign-in isn't connected yet. Add the Supabase keys to .env.local (see README)." };
+  if (!email) return { email, field: "email", error: "Enter your email." };
+  if (!password) return { email, field: "password", error: "Enter your password." };
+
   const sb = await serverClient();
-  const { error } = await sb.auth.signInWithPassword({ email: text(form.get("email"), 320), password: String(form.get("password") ?? "") });
-  if (error) return { error: error.message === "Invalid login credentials" ? "Wrong email or password." : error.message };
+  const { error } = await sb.auth.signInWithPassword({ email, password });
+  if (error) return { email, field: error.code === "invalid_credentials" ? "password" : undefined, error: authMessage(error.code, error.message) };
+
   const { data: ok } = await sb.rpc("is_admin");
   if (!ok) {
     await sb.auth.signOut();
-    return { error: "This account isn't on the admin list. Add its email to the admins table in Supabase." };
+    return { email, field: "email", error: "This account can't edit the site." };
   }
+  redirect(safeNext(form.get("next")));
+}
+
+export async function requestReset(_: AuthState, form: FormData): Promise<AuthState> {
+  const email = text(form.get("email"), 320).toLowerCase();
+  if (!hasSupabase) return { email, error: "Sign-in isn't connected yet." };
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { email, field: "email", error: "Enter the email you sign in with." };
+
+  const h = await headers();
+  const origin = h.get("origin") ?? `${h.get("x-forwarded-proto") ?? "https"}://${h.get("host")}`;
+  const sb = await serverClient();
+  const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: `${origin}/admin/auth/callback?next=/admin/reset` });
+  // Same reply whether or not the account exists, so the form can't be used to find accounts.
+  if (error && (error.code === "over_email_send_rate_limit" || error.code === "over_request_rate_limit"))
+    return { email, error: authMessage(error.code, error.message) };
+  return { email, sent: true };
+}
+
+export async function updatePassword(_: AuthState, form: FormData): Promise<AuthState> {
+  const password = String(form.get("password") ?? "");
+  const confirm = String(form.get("confirm") ?? "");
+  if (password.length < 10) return { field: "password", error: "Use at least 10 characters." };
+  if (password !== confirm) return { field: "password", error: "The two passwords don't match." };
+
+  const sb = await serverClient();
+  const { data } = await sb.auth.getUser();
+  if (!data.user) redirect("/admin/login");
+  const { error } = await sb.auth.updateUser({ password });
+  if (error) return { field: "password", error: authMessage(error.code, error.message) };
   redirect("/admin/posts");
 }
 

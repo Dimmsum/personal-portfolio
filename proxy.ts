@@ -8,6 +8,9 @@ export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
   if (!hasSupabase) return response;
 
+  const { pathname, search, searchParams } = request.nextUrl;
+  if (pathname.startsWith("/admin/auth/")) return response; // the reset link, before there's a session
+
   const sb = createServerClient(supabaseUrl, supabaseKey, {
     cookies: {
       getAll: () => request.cookies.getAll(),
@@ -19,9 +22,15 @@ export async function proxy(request: NextRequest) {
     },
   });
   const { data } = await sb.auth.getUser();
+  const isLogin = pathname === "/admin/login";
 
-  const isLogin = request.nextUrl.pathname === "/admin/login";
-  if (!data.user && !isLogin) return NextResponse.redirect(new URL("/admin/login", request.url));
+  if (!data.user && !isLogin) {
+    const url = new URL("/admin/login", request.url);
+    url.searchParams.set("next", pathname + search);
+    return NextResponse.redirect(url);
+  }
+  // Already signed in: skip the form (unless the login page is showing a message).
+  if (data.user && isLogin && !searchParams.has("e")) return NextResponse.redirect(new URL("/admin/posts", request.url));
   return response;
 }
 
