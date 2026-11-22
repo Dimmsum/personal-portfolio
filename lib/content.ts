@@ -47,6 +47,12 @@ export type Repo = {
 /* Cache tags. Admin actions call updateTag() with these so changes show up right away. */
 export const TAGS = { posts: "posts", projects: "projects", settings: "settings" } as const;
 
+/* Turns "table not found" into a pointer at the setup step. */
+function dbError(what: string, error: { code?: string; message: string }) {
+  const hint = error.code === "PGRST205" ? " Run supabase/schema.sql and supabase/seed.sql in this project's SQL Editor (see README)." : "";
+  return new Error(`Couldn't load ${what}: ${error.message}.${hint}`);
+}
+
 const minutes = (md: string) => Math.max(1, Math.round(md.split(/\s+/).length / 220));
 const toDate = (d: unknown) => (d instanceof Date ? d.toISOString().slice(0, 10) : String(d ?? ""));
 
@@ -128,7 +134,7 @@ export type PostRow = {
 
 async function projectsFromDb(): Promise<Project[]> {
   const { data, error } = await publicClient().from("projects").select("*").eq("published", true);
-  if (error) throw new Error(`Couldn't load projects: ${error.message}`);
+  if (error) throw dbError("projects", error);
   return (data as ProjectRow[]).map((r) => ({
     slug: r.slug,
     title: r.title,
@@ -148,7 +154,7 @@ async function projectsFromDb(): Promise<Project[]> {
 
 async function postsFromDb(): Promise<Post[]> {
   const { data, error } = await publicClient().from("posts").select("*").eq("published", true);
-  if (error) throw new Error(`Couldn't load posts: ${error.message}`);
+  if (error) throw dbError("posts", error);
   return (data as PostRow[]).map((r) => ({
     slug: r.slug,
     title: r.title,
