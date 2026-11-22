@@ -3,7 +3,7 @@ import type { Post, Project } from "@/lib/content";
 import { formatDate } from "@/lib/format";
 import { Cover } from "./Cover";
 import { Icon } from "./Icon";
-import { GenCover, Lines, hash } from "./Lines";
+import { GenCover, hash } from "./Lines";
 
 export type ProjectSummary = Omit<Project, "html">;
 export type PostSummary = Omit<Post, "html">;
@@ -64,31 +64,3 @@ export function PostEntry({ p }: { p: PostSummary }) {
     </Link>
   );
 }
-
-type SocialPost = { title: string; views: string; url: string; thumb: string };
-
-export function PostTile({ x, platform }: { x: SocialPost; platform?: string }) {
-  return (
-    <a className="post" href={x.url} target="_blank" rel="noopener noreferrer">
-      <Cover
-        src={x.thumb}
-        alt={x.title}
-        fallback={
-          <div className="pg">
-            <Lines seed={hash(x.title)} />
-          </div>
-        }
-      />
-      <div className="shade" />
-      <span className="src">{platform ? <Icon name={platform} /> : <Icon name="play" className="fill" />}</span>
-      <span className="pt">
-        <b>{x.title}</b>
-        <span>
-          <Icon name="eye" />
-          {x.views}
-        </span>
-      </span>
-    </a>
-  );
-}
-

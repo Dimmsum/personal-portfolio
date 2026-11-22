@@ -23,7 +23,9 @@ npm run build    # production build
 
 Everything you'd change lives in `content/` and `public/`.
 
-**Settings** – `content/site.ts`: name, intro, email, socials, follower counts, stats, top posts, bio, jobs, skills.
+**Settings** – `content/site.ts`: name, intro, email, socials, bio, jobs, skills.
+
+**Follower counts and top videos** – in `content/site.ts`, update `followers` for each platform (the totals on the site add up on their own), and list your best videos in `topVideos`, best first. Paste a TikTok video link or an Instagram post/reel link and the site embeds the official player. `views` is optional.
 
 **Add a project** – copy `content/projects/_template.md`, rename it (`my-app.md` becomes `/work/my-app`), fill in the top block, write the story underneath in Markdown.
 
@@ -51,4 +53,4 @@ Push to GitHub and import the repo on [Vercel](https://vercel.com/new). No envir
 
 - Light and dark mode follow the visitor's system setting; the toggle remembers their choice.
 - Motion is turned off for visitors who prefer reduced motion.
-- Instagram and TikTok don't allow pulling your stats or posts without a business API token, so counts and top posts are set by hand in `site.ts`. To show live embeds later, add TikTok's and Instagram's embed scripts to a post tile.
+- Follower counts are set by hand in `site.ts`; pulling them live would need TikTok's Display API and the Instagram API.

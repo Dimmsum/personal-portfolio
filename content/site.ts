@@ -30,39 +30,17 @@ export const site = {
     ],
   },
 
-  statsNote: "Sample numbers. Update them in content/site.ts.",
-  stats: [
-    { icon: "users", value: "18.2K", label: "Followers" },
-    { icon: "eye", value: "1.4M", label: "Total views" },
-    { icon: "heart", value: "6.8%", label: "Avg. engagement" },
-    { icon: "code", value: "12", label: "Projects shipped" },
-  ],
-
-  // thumb: a screenshot of the video cover, e.g. "/images/posts/tiktok-1.jpg"
   socials: {
-    tiktok: {
-      label: "TikTok",
-      handle: "@dimetri.lee",
-      url: "https://www.tiktok.com/@dimetri.lee",
-      followers: "10.3K",
-      posts: [
-        { title: "POV: CS student with a full-time job", views: "412K", url: "https://www.tiktok.com/@dimetri.lee", thumb: "" },
-        { title: "3 projects that got me interviews", views: "156K", url: "https://www.tiktok.com/@dimetri.lee", thumb: "" },
-        { title: "What a software engineer actually does", views: "97K", url: "https://www.tiktok.com/@dimetri.lee", thumb: "" },
-      ],
-    },
-    instagram: {
-      label: "Instagram",
-      handle: "@dimetri.al",
-      url: "https://www.instagram.com/dimetri.al",
-      followers: "7.9K",
-      posts: [
-        { title: "Day in the life: work + uni", views: "84K", url: "https://www.instagram.com/dimetri.al", thumb: "" },
-        { title: "My desk setup tour", views: "31K", url: "https://www.instagram.com/dimetri.al", thumb: "" },
-        { title: "Kingston food run after the gym", views: "22K", url: "https://www.instagram.com/dimetri.al", thumb: "" },
-      ],
-    },
+    tiktok: { label: "TikTok", handle: "@dimetri.lee", url: "https://www.tiktok.com/@dimetri.lee", followers: 824 },
+    instagram: { label: "Instagram", handle: "@dimetri.al", url: "https://www.instagram.com/dimetri.al", followers: 19 },
   },
+
+  // Best videos first. Paste a TikTok video link or an Instagram post/reel link.
+  // views is optional, e.g. "12.4K". Leave "" to hide it.
+  topVideos: [
+    { url: "https://www.tiktok.com/@dimetri.lee/video/7576888728778575112", views: "" },
+    { url: "https://www.tiktok.com/@dimetri.lee/video/7692257015552494868", views: "" },
+  ],
 
   offers: [
     { icon: "play", title: "Sponsored videos", text: "Tech, study and lifestyle products on TikTok and Instagram." },
@@ -108,6 +86,21 @@ export const site = {
 
 export type Site = typeof site;
 export type SocialKey = keyof typeof site.socials;
+
+/* 843 -> "843", 12400 -> "12.4K", 1200000 -> "1.2M" */
+export function formatCount(n: number) {
+  if (n >= 1e6) return `${+(n / 1e6).toFixed(1)}M`;
+  if (n >= 1e4) return `${+(n / 1e3).toFixed(1)}K`;
+  return n.toLocaleString("en-US");
+}
+
+/* Totals are worked out from the follower counts above. */
+const totalFollowers = Object.values(site.socials).reduce((a, s) => a + s.followers, 0);
+export const stats = [
+  { icon: "users", value: formatCount(totalFollowers), label: "Followers across platforms" },
+  { icon: "tiktok", value: formatCount(site.socials.tiktok.followers), label: "TikTok followers" },
+  { icon: "instagram", value: formatCount(site.socials.instagram.followers), label: "Instagram followers" },
+];
 
 /* Icons shown in the hero and footer */
 export const socialLinks = [

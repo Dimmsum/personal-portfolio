@@ -1,20 +1,18 @@
 import Link from "next/link";
-import { site, socialLinks, type SocialKey } from "@/content/site";
+import { site, socialLinks, stats, formatCount, type SocialKey } from "@/content/site";
 import { getPosts, getProjects } from "@/lib/content";
-import { summary, viewsToNumber } from "@/lib/format";
+import { summary } from "@/lib/format";
 import { Icon } from "@/components/Icon";
 import { Cover } from "@/components/Cover";
 import { Lines } from "@/components/Lines";
 import { Stats } from "@/components/Stats";
-import { PostEntry, PostTile, ProjectGrid } from "@/components/Cards";
+import { PostEntry, ProjectGrid } from "@/components/Cards";
+import { VideoGrid } from "@/components/VideoEmbed";
 
 export default async function Home() {
   const projects = (await getProjects()).filter((p) => p.featured).slice(0, 3).map(summary);
   const posts = (await getPosts()).slice(0, 2).map(summary);
-  const top = (Object.keys(site.socials) as SocialKey[])
-    .flatMap((k) => site.socials[k].posts.map((x) => ({ ...x, k })))
-    .sort((a, b) => viewsToNumber(b.views) - viewsToNumber(a.views))
-    .slice(0, 4);
+  const total = Object.values(site.socials).reduce((n, x) => n + x.followers, 0);
 
   return (
     <>
@@ -63,7 +61,7 @@ export default async function Home() {
               </div>
             </div>
           </div>
-          <Stats stats={site.stats} note={site.statsNote} />
+          <Stats stats={stats} />
         </div>
       </section>
 
@@ -83,21 +81,32 @@ export default async function Home() {
       </section>
 
       <section className="band navy">
-        <div className="wrap">
-          <div className="head">
-            <h2>
-              Most <span>viewed</span>
-            </h2>
+        <div className="wrap reach">
+          <div>
+            <div className="head" style={{ marginBottom: 0 }}>
+              <h2>
+                Most <span>viewed</span>
+              </h2>
+            </div>
+            <p className="big">{formatCount(total)}</p>
+            <p className="muted" style={{ margin: 0 }}>followers across TikTok and Instagram</p>
+            <ul className="split">
+              {(Object.keys(site.socials) as SocialKey[]).map((k) => (
+                <li key={k}>
+                  <Icon name={k} />
+                  <b>{formatCount(site.socials[k].followers)}</b>
+                  <a href={site.socials[k].url} target="_blank" rel="noopener noreferrer">
+                    {site.socials[k].handle}
+                  </a>
+                </li>
+              ))}
+            </ul>
             <Link className="textlink" href="/content">
-              Content &amp; stats
+              Content &amp; collabs
               <Icon name="right" />
             </Link>
           </div>
-          <div className="posts four">
-            {top.map((x) => (
-              <PostTile key={x.title} x={x} platform={x.k} />
-            ))}
-          </div>
+          <VideoGrid videos={site.topVideos.slice(0, 2)} />
         </div>
       </section>
 

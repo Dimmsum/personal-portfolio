@@ -1,33 +1,11 @@
 import type { Metadata } from "next";
-import { site, type SocialKey } from "@/content/site";
+import { site, stats, formatCount, type SocialKey } from "@/content/site";
 import { Icon } from "@/components/Icon";
 import { Stats } from "@/components/Stats";
-import { PostTile } from "@/components/Cards";
+import { VideoGrid } from "@/components/VideoEmbed";
 import { CopyEmail } from "@/components/CopyEmail";
 
 export const metadata: Metadata = { title: "Content", description: "TikTok and Instagram reach, top posts and how to work together." };
-
-function Platform({ k }: { k: SocialKey }) {
-  const p = site.socials[k];
-  return (
-    <div className="plat">
-      <div className="pt-h">
-        <Icon name={k} />
-        <b>{p.label}</b>
-        <span>{p.followers} followers</span>
-        <a className="textlink" href={p.url} target="_blank" rel="noopener noreferrer">
-          {p.handle}
-          <Icon name="arrow" />
-        </a>
-      </div>
-      <div className="posts">
-        {p.posts.map((x) => (
-          <PostTile key={x.title} x={x} />
-        ))}
-      </div>
-    </div>
-  );
-}
 
 export default function ContentPage() {
   return (
@@ -42,10 +20,21 @@ export default function ContentPage() {
       </section>
       <section className="band navy">
         <div className="wrap">
-          <Stats stats={site.stats} note={site.statsNote} />
-          <div className="platforms" style={{ marginTop: "clamp(40px,5vw,64px)" }}>
-            <Platform k="tiktok" />
-            <Platform k="instagram" />
+          <Stats stats={stats} />
+          <div className="head" style={{ marginTop: "clamp(48px,6vw,80px)" }}>
+            <h2>
+              Top <span>videos</span>
+            </h2>
+          </div>
+          <VideoGrid videos={site.topVideos} />
+          <div className="handles">
+            {(Object.keys(site.socials) as SocialKey[]).map((k) => (
+              <a key={k} className="textlink" href={site.socials[k].url} target="_blank" rel="noopener noreferrer">
+                <Icon name={k} />
+                {site.socials[k].handle} · {formatCount(site.socials[k].followers)}
+                <Icon name="arrow" />
+              </a>
+            ))}
           </div>
         </div>
       </section>
