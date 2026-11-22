@@ -3,7 +3,7 @@ title: Campus Cart
 year: 2026
 type: Mobile
 status: Prototype
-order: 4
+order: 5
 tags: [Marketplace, Errands]
 blurb: A student-only errands and marketplace app, piloting at UTech.
 images: []

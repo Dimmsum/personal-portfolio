@@ -3,8 +3,8 @@ title: Tabi
 year: 2026
 type: Mobile
 status: In progress
-featured: true
-order: 1
+featured: false
+order: 4
 tags: [iOS, Maps, Social]
 blurb: A map-based social app for meeting new people by doing activities together.
 images: []          # e.g. ["/images/projects/tabi-cover.jpg", "/images/projects/tabi-2.jpg"]

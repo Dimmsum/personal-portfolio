@@ -3,7 +3,7 @@ title: SwiftPay
 year: 2026
 type: Mobile
 status: Planning
-order: 5
+order: 6
 tags: [iOS, Fintech, Supabase, Clerk]
 blurb: An iOS fintech app. Architecture and planning stage.
 images: []
