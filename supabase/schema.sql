@@ -1,7 +1,5 @@
 -- Run this once in Supabase: Dashboard -> SQL Editor -> New query -> paste -> Run.
 -- Then run seed.sql to copy in the posts and projects that were in content/.
---
--- BEFORE RUNNING: change the email on the last line to the one you log in with.
 
 -- ---------------------------------------------------------------- tables
 
@@ -109,5 +107,5 @@ create policy "admins delete media" on storage.objects for delete to authenticat
   using (bucket_id = 'media' and public.is_admin());
 
 -- ---------------------------------------------------------------- you
--- CHANGE THIS to the email you will log in with:
-insert into public.admins (email) values ('you@example.com') on conflict do nothing;
+-- The only account allowed to edit. Add more rows here (or in Table Editor -> admins) to add editors.
+insert into public.admins (email) values ('dimetri.lee.2024@gmail.com') on conflict do nothing;

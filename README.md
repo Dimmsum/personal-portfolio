@@ -33,8 +33,8 @@ Saving updates the live site straight away. No redeploy.
 ### One-time setup (about 10 minutes)
 
 1. Create a free project at [supabase.com](https://supabase.com/dashboard).
-2. In **SQL Editor**, open `supabase/schema.sql`, change `you@example.com` on the last line to your login email, paste it in and **Run**. Then paste and run `supabase/seed.sql` (copies in the posts and projects from `content/`).
-3. In **Authentication → Users**, click **Add user → Create new user** with that same email and a password. Tick *Auto confirm*.
+2. In **SQL Editor**, paste `supabase/schema.sql` and **Run**. Its last line sets the only email allowed to edit (`dimetri.lee.2024@gmail.com`); change it there first if that ever needs to differ. Then paste and run `supabase/seed.sql` (copies in the posts and projects from `content/`).
+3. In **Authentication → Users**, click **Add user → Create new user** with `dimetri.lee.2024@gmail.com` and a password. Tick *Auto confirm*.
 4. In **Authentication → Sign In / Providers**, turn off **Allow new users to sign up**, so nobody else can make an account.
 5. In **Project Settings → API** (or the **Connect** button), copy the project URL and the publishable (or anon) key into `.env.local`. Use `.env.example` as the template. Add the same two variables in Vercel under **Settings → Environment Variables**, then redeploy once.
 6. Run `npm run dev`, open http://localhost:3000/admin and sign in.
