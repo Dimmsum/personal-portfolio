@@ -18,7 +18,7 @@ export default async function ContentPage() {
           <h1>
             Content <span>&amp; reach</span>
           </h1>
-          <p>I make videos on software engineering, uni life, the gym, food and trips around Jamaica. Here&apos;s what&apos;s landing, and how we can work together.</p>
+          <p>I make videos on software engineering and uni life in Jamaica. Here&apos;s what&apos;s landing, and how we can work together.</p>
         </div>
       </section>
       <section className="band navy">

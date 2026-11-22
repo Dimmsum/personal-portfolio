@@ -14,10 +14,7 @@ const res = await fetch("https://api.github.com/users/Dimmsum");
 const user = await res.json();
 ```
 
-Add your own example from a project you built.', true),
-('work-school-gym', 'Work, school and the gym: how I split my week', '2026-10-30', 'Life', 'The calendar that keeps a full-time job and a degree running together.', 'Sample post. Replace this with your own writing.
-
-Walk through a real week: work blocks, classes, training and the time you protect for side projects.', true)
+Add your own example from a project you built.', true)
 on conflict (slug) do nothing;
 
 insert into public.projects (slug, title, year, type, status, featured, sort_order, tags, blurb, images, link, repo, body, published) values

@@ -51,19 +51,16 @@ export const defaultSite = {
   about: {
     photos: [
       { src: "/images/about/dimetri-sagicor.jpg", caption: "At work" },
-      { src: "", caption: "Gym" },
-      { src: "", caption: "Trips" },
     ],
     bio: [
       "I'm Dimetri, a 21-year-old software engineer working full time while finishing university.",
       "I got my first internship in second year and haven't stopped building since. Today I work at Intellibus and the Sagicor Innovation Lab, and run my own client projects on the side.",
-      "Online I share software engineering for CS students, plus the rest of my life: school, the gym, food and trips.",
+      "Online I share software engineering for CS students, plus what uni life looks like alongside a full-time job.",
     ],
     facts: [
       { icon: "pin", text: "Kingston, Jamaica" },
       { icon: "brief", text: "Intellibus & Sagicor Innovation Lab" },
       { icon: "cap", text: "University student" },
-      { icon: "dumb", text: "Gym most days" },
     ],
   },
 
