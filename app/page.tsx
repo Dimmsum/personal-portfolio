@@ -1,11 +1,10 @@
 import Link from "next/link";
-import { site, socialLinks, stats, formatCount, type SocialKey } from "@/content/site";
+import { site, socialLinks, formatCount, type SocialKey } from "@/content/site";
 import { getPosts, getProjects } from "@/lib/content";
 import { summary } from "@/lib/format";
 import { Icon } from "@/components/Icon";
 import { Cover } from "@/components/Cover";
 import { Lines } from "@/components/Lines";
-import { Stats } from "@/components/Stats";
 import { PostEntry, ProjectGrid } from "@/components/Cards";
 import { VideoGrid } from "@/components/VideoEmbed";
 
@@ -61,7 +60,6 @@ export default async function Home() {
               </div>
             </div>
           </div>
-          <Stats stats={stats} />
         </div>
       </section>
 
